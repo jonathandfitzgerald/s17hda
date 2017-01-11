@@ -1,0 +1,56 @@
+---
+title: "RegEx"
+author: "Ryan Cordell"
+date: "1/10/2017"
+output: html_document
+---
+
+## Useful resources
+
+1. Doug Knox's ["Understanding Regular Expressions"](http://programminghistorian.org/lessons/understanding-regular-expressions) tutorial at the Programming Historian provides a nice introduction into the basics of RegEx for cleaning historical data.
+2. Our TA, Jonathan Fitzgerald, pointed me to [Regular Expressions 101](https://regex101.com/), which allows you to test expressions and breaks down precisely what they're doing in the Explanation and Match Information panels. Fitz said he likes that "it makes transparent what the RegEx is doing" and I agree.
+
+## Regular Expressions
+
+In brief, regular expressions (RegEx) provide a way to abstractly describe the structure of texts. You can use these abstractions to  Using RegEx, you can specify patterns that will allow you to quickly make changes across a dataset, rather than correcting data line by line. 
+
+Let's say I have a spreadsheet full of email addresses from different domains, providers, etc. (e.g. r.cordell@northeastern.edu, r.cordell@neu.edu, rccordell@gmail.com). We can read each of these and recognize them as email addresses, but we might also look across them to think about what formal textual pattern constitutes an email address: 
+
+1. a series of upper- and/or lower-case letters, digits, or symbols (from a set of allowed symbols);
+2. An `@` symbol
+3. a series of upper- and/or lower-case letters, digits, of symbols
+4. A period
+5. a series of three letters
+
+In fact this only describes US-based email addresses, as those from other countries can have longer suffixes (e.g. `.co.uk`), but this gives you a sense of how you might outline the abstract structure of text strings that we would recognize as email address. In RegEx you might search the following to find email addresses: 
+
+`
+([A-Za-z0-9._%+-]+)@([A-Za-z0-9-]+)\.([A-Za-z]{2,4})
+`
+
+To understand what this is doing, let's use [Regular Expressions 101](https://regex101.com/). Type an email address or two into the "Test String" box and then copy and paste that RegEx above into the regular expression box. We will walk through how this seach is working together.
+
+## Using RegEx
+
+I don't use RegEx everyday. I don't have its intricacies memorized. Typically I will use RegEx when faced with a problem that requires me to standardize some aspect of a dataset to solve. When I encounter those problems, however, I typically need to refer to a RegEx guide to remind myself precisely what symbols translate to what textual patterns. Which is to say: you don't need to memorize RegEx syntax in order to find them useful. What's most essential is that you are able to identify what kinds of problems RegEx might help you work through. 
+
+There are a number of programs that allow you to make use of RegEx, often through a more powerful version of the "Find and Replace" feature you may have used before. We will use and talk about a few of these in class today, and later in the semester you will see how RegEx can be used within a programming language such as R. 
+
+## Cleaning Data
+
+In the next section, we will be thinking about how to approach cleaning a dataset using RegEx. We will focus on the location field of the `booktitles-part1.tsv` file in the [class Github repository](https://github.com/jonathandfitzgerald/s17hda). To start, however, let's just paste the values below into the "Text String" box at [Regular Expressions 101](https://regex101.com/). 
+
+`
+[Chanhassen, MN]
+Washington [D.C.]
+San Francisco, Calif
+Paramus, N.J
+[Chanhassen, Minn.?]
+New York, N.Y., U.S.A
+"Redmond, Wash"
+"Upper Saddle River, N.J"
+`
+
+
+# Exercises
+
