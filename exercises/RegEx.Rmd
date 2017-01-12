@@ -163,4 +163,4 @@ These exercises will all make use of [data in the course Github](https://github.
 2. Reformat `crewlists.csv` so as to separate the column `FullName` into two columns, one with the crew members' first names and one with their last names.
 3. Delete all text *not* enclosed in quotation marks in *The Narrative of William W. Brown, a Fugitive Slave*.
 4. Using the file `words.txt`, determine what words in the dictionary contain the same letter three times in a row. 
-5. A stretch goal: write a regex that changes the spelling of all words in a document so that they conform to the rule "I before e, except after c."
+5. A stretch goal: write a regex that changes the spelling of all words in a document (you can choose—a novel from Project Gutenberg, perhaps, or even the dictionary in `words.txt`) so that they conform to the rule "I before e, except after c."
