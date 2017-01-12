@@ -9,6 +9,8 @@ output: html_document
 
 1. Doug Knox's ["Understanding Regular Expressions"](http://programminghistorian.org/lessons/understanding-regular-expressions) tutorial at the Programming Historian provides a nice introduction into the basics of RegEx for cleaning historical data.
 2. Our TA, Jonathan Fitzgerald, pointed me to [Regular Expressions 101](https://regex101.com/), which allows you to test expressions and breaks down precisely what they're doing in the Explanation and Match Information panels. Fitz said he likes that "it makes transparent what the RegEx is doing" and I agree.
+3. This [Regular Expressions Quick Start](http://www.regular-expressions.info/quickstart.html) gives a useful overview of the core RegEx you'll need for today's work, and the larger resource delves into details for the future.
+4. Once you understand the basics of RegEx matching, this [cheat sheet](http://web.mit.edu/hackl/www/lab/turkshop/slides/regex-cheatsheet.pdf) may help you recall precisely the characters you need for particular patterns. 
 
 ## Regular Expressions
 
@@ -28,7 +30,7 @@ In fact this only describes US-based email addresses, as those from other countr
 ([A-Za-z0-9._%+-]+)@([A-Za-z0-9-]+)\.([A-Za-z]{2,4})
 `
 
-To understand what this is doing, let's use [Regular Expressions 101](https://regex101.com/). Type an email address or two into the "Test String" box and then copy and paste that RegEx above into the regular expression box. We will walk through how this seach is working together.
+To understand what this is doing, let's use [Regular Expressions 101](https://regex101.com/). Type an email address or two into the "Test String" box and then copy and paste that RegEx above into the regular expression box. Did it work, or not? We will walk through how this matching happens and troubleshoot any that don't work together. We'll also experiment with other RegEx that would have accomplished the same task.
 
 ## Using RegEx
 
@@ -51,6 +53,15 @@ New York, N.Y., U.S.A
 "Upper Saddle River, N.J"
 `
 
+Our goal is to figure out what RegEx would convert these idiosyncratic addresses into a standard pattern: city name in one column, and two-letter state abbreviation in another. With such a diverse set of patterns, we probably can't write a single RegEx that would convert them all in one fell swoop. But within the actual dataset there are many examples of each of these patterns, so it would be to our benefit to develop a few RegEx that will help us clean the data in a few steps rather than line by line. As we work, we'll want to consider:
+
+1. What consistent textual patterns can we describe abstractly in each line, and perhaps between lines?
+2. What steps would we need to follow—and in what order—to convert these values into two columns with the city name in column one and the state abbreviation in column two?
+3. Are there any aspects of the text we cannot describe through RegEx and might require hand cleaning?
+
+As we work, you might be well served pasting RegEx that does what you want it to do into this document along with explanatory notes. If you surround it with `grave marks` (\`) R and/or Markdown will recognize it as code. 
+
+Once we've experimented a bit on the RegEx 101 site, we will open up the full spreadsheet in a few different programs to talk about the structure of the data and how you might use RegEx to clean these fields across a larger file. 
 
 # Exercises
 
