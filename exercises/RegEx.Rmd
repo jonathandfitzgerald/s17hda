@@ -164,3 +164,8 @@ These exercises will all make use of [data in the course Github](https://github.
 3. Delete all text *not* enclosed in quotation marks in *The Narrative of William W. Brown, a Fugitive Slave*.
 4. Using the file `words.txt`, determine what words in the dictionary contain the same letter three times in a row. 
 5. A stretch goal: write a regex that changes the spelling of all words in a document (you can choose—a novel from Project Gutenberg, perhaps, or even the dictionary in `words.txt`) so that they conform to the rule "I before e, except after c."
+
+# Exercise Solutions
+
+4. `\b\w*([a-zA-z])\1{2,}\w*\b` or `\b\[A-Za-z]*([a-zA-z])\1{2,}\[A-Za-z]*\b` finds all the words with three or more repeated letters. 
+5. `([A-Za-z]+)?([^Cc])(e)(i)(\S*)` finds the words with something ei; replace with `\1\2\4\3\5`
