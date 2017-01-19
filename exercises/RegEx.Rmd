@@ -167,6 +167,6 @@ These exercises will all make use of [data in the course Github](https://github.
 
 # Exercise Solutions
 
-3. `([^"]*)` gets rid of everything before the quotation marks; `[ -]("[A-Za-z].*?")[ -]` finds everything within quotation marks.
+3. `([^"]*)` gets rid of everything before the quotation marks; `[ -]("[A-Za-z].*?")[ -]` finds everything within quotation marks. Once you get rid of the line breaks, `[^\"]*(?:\"([^\"]*)\")? ` does the trick.
 4. `\b\w*([a-zA-z])\1{2,}\w*\b` or `\b\[A-Za-z]*([a-zA-z])\1{2,}\[A-Za-z]*\b` finds all the words with three or more repeated letters. 
 5. `([A-Za-z]+)?([^Cc])(e)(i)(\S*)` finds the words with something ei; replace with `\1\2\4\3\5`

@@ -314,14 +314,33 @@ As I noted in class last week, one benefit to learning RegEx is that it can be u
 install.packages("stringr")
 library(stringr)
 
-brown <- paste(readLines("https://raw.githubusercontent.com/jonathandfitzgerald/s17hda/master/data/NarrativeWilliamWellsBrown.txt"), collapse = "\n")
+brown <- tibble(text=read_file("https://raw.githubusercontent.com/jonathandfitzgerald/s17hda/master/data/NarrativeWilliamWellsBrown.txt"))
 
-quotes <- "[\\s-](\"[A-Za-z].*?\")[\\s-]"
+brown$text <- gsub("\r\n", " ", brown$text) %>%
+  gsub("([.!?])([A-Za-z])", "\1 \2", brown$text)
 
-brown_quotes <- str_extract_all(brown, quotes) 
+quotes <- "(\"[A-Za-z].*?\")"
+
+brown_quotes <- str_extract_all(brown$text, quotes) 
 
 View(brown_quotes)
   
 ```
 
-brown_quotes <- as_data_frame(regmatches(brown,brown_quotes,invert=FALSE))
+When imported as dataframes, R also understands columns, so we can use RegEx only on a particular column without worrying about affecting the others:
+
+```{r}
+
+crewlist <- read.csv("https://raw.githubusercontent.com/jonathandfitzgerald/s17hda/master/data/crewlists.csv", header=TRUE, sep=",")
+
+crewlist$ApproximateDeparture <- gsub("[0-9]{1,2}\\/[0-9]{1,2}\\/([0-9]{4})", "\\1", crewlist$ApproximateDeparture)
+
+```
+
+# Exercises
+
+This week let's keep it (relatively) simple: 
+
+1. Create a new RMD file and work through Taylor Arnold and Lauren Tilton's ["Basic Text Processing in R"](http://programminghistorian.github.io/ph-submissions/lessons/basic-text-processing-in-r) exercise. Copy the code as necessary and run it. As best as possible, make sure you understand what each of the steps is doing to the data it uses. Keep in mind that you should understand the *transformation* well, though you might be less clear about the precise means by which that transformation was effected.
+2. Choose your own text and perform the same analyses that Arnold and Tilton demonstrate using State of the Union addresses. You might not be able to reproduce the group analyses at the end; that's ok for now.
+3. Strech goal: Work through the chapter on ["Data Manipulation"](http://lincolnmullen.com/projects/dh-r2/data.html) in DHMR.
