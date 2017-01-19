@@ -97,7 +97,7 @@ raven = data_frame(text=read_file("http://chroniclingamerica.loc.gov/lccn/sn8505
 
 I prefer `<-` to `=` because the latter is used for some other purposes in R, and thus I find `<-` less confusing, but you should determine which you prefer. You don't have to be consistent, even, but it helps make your code more readable if you are.
 
-If you look in your "Global Environment" panel in R Studio, you should now see `raven` listed under "Data." You can click the little grid next to `raven` in order to load the data frame in a new window, or you could run this code to do the same:
+If you look in your "Global Environment" panel in R Studio, you should now see `raven` listed under "Data." That panel will list all of the variables and other data currently in memory that can be invoked in your scripts. You can click the little grid next to `raven` in order to load the data frame in a new window, or you could run this code to do the same:
 
 ```{r}
 
@@ -105,7 +105,7 @@ View(raven)
 
 ```
 
-You might not want to include a function like `View()` in your actual code; you might just want to quickly look at your data without saving that act in an actual file. If you want to run code but not save it, you can type it directly in your console and just hit return. Try running `View(raven)` directly in the console now. 
+You might not want to include a function like `View()` in your actual code; you might just want to quickly look at your data without saving that act of looking in your actual script. If you want to run code but not save it, you can type it directly in your console and just hit return. Try running `View(raven)` directly in the console now. 
 
 A few important but perhaps not obvious points about variables:
 
@@ -305,3 +305,23 @@ sharedFiveGrams %>%
 
 ```
 
+## Bonus: RegEx in R
+
+As I noted in class last week, one benefit to learning RegEx is that it can be used in programming languages either to clean data and make replacements (our focus last week) *or* to select the data you want from a larger set. Working in R, for instance, that difficult problem #3 (delete everything *not* in quotation marks from William Wells Brown's narrative) becomes the much easier problem of "extract everything within quotation marks into a new dataframe."
+
+```{r}
+
+install.packages("stringr")
+library(stringr)
+
+brown <- paste(readLines("https://raw.githubusercontent.com/jonathandfitzgerald/s17hda/master/data/NarrativeWilliamWellsBrown.txt"), collapse = "\n")
+
+quotes <- "[\\s-](\"[A-Za-z].*?\")[\\s-]"
+
+brown_quotes <- str_extract_all(brown, quotes) 
+
+View(brown_quotes)
+  
+```
+
+brown_quotes <- as_data_frame(regmatches(brown,brown_quotes,invert=FALSE))
