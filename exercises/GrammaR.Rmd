@@ -32,7 +32,7 @@ As an RMD file, however, this is more than a flat text document: it's a program 
 
 As in most programming languages, you can do math in R, though we won't do much of this in our class. 
 
-In addition to using the run buttons above, you can also run R code *one line* at a time by putting your cursor on the line and hitting `command-return` (on a Mac), `control-return`(in Windows), or `??` (in Linux). If I don't use the R Markdown syntax to make an executable code block (by surrounding the code with three backticks and including the {r} designator) then you'll have to run the code using `command-return`. When you work with regular R documents—without the markdown—this will be the primary way you run code. Try running this code by placing your cursor on the line and hitting `command-return`/`control-return`/??:
+In addition to using the run buttons above, you can also run R code *one line* at a time by putting your cursor on the line and hitting `command-return` (on a Mac), `control-return`(in Windows), or `control-return` (in Linux). If I don't use the R Markdown syntax to make an executable code block (by surrounding the code with three backticks and including the {r} designator) then you'll have to run the code using `command-return`. When you work with regular R documents—without the markdown—this will be the primary way you run code. Try running this code by placing your cursor on the line and hitting `command-return`/`control-return`/??:
 
 plot(1:100,(1:100)^2)
 
@@ -50,7 +50,7 @@ To install an R package, you can either click Tools --> Install Packages or run 
 
 ```{r}
 
-install.packages("tidyverse"")
+install.packages("tidyverse")
 
 ```
 
@@ -66,8 +66,9 @@ In the box below, write six lines of code to install and then load the packages 
 
 ```{r}
 
-
-
+library(dplyr)
+library(tidytext)
+library(wordcloud)
 
 ```
 

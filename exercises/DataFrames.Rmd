@@ -1,0 +1,86 @@
+---
+title: "Data Frames"
+author: "Ryan Cordell"
+date: "1/20/2017"
+output: html_document
+---
+
+For today's workshop, we're going to load in all the libraries we need right off the bat, so we don't have the confusion of last week. If you find you don't have one of these installed, then install it! Most of what we do today uses functions from the packages `tidyr` and `dplyr`, which are both included in `tidyverse`. Today I won't be putting everything in executable codeblocks. If there's no run button, remember how to run lines of code manually!
+
+```{r}
+library(tidyverse)
+```
+
+# Navigating Files in R
+
+If you've only browed files through a GUI you might not realize this, but your computer's directories can be invoked through paths that look much like URLs. To illustrate this, we're going to browse around in your Terminals for a few minutes before we jump back into R.
+
+At any given time, R refers to a particular "working directory" on your hard drive. Any paths to data you construct take this working directory as their root. So if my working directory is `"Dropbox/Teaching/HDA/s17hda-github/"` then invoking `"/data/crewlists.csv"` would begin from the working directory and look for a subdirectory called `data` and then a file within that working directory. Many, many times problems importing or working with data can be tracked down to R looking in the wrong working directory. So, to check your working directory, you can run:
+
+```{r}
+
+getwd()
+
+```
+
+If the working directory is not what you want, you can set it in two ways: through the menus for Session --> Set Working Directory or through the command below. The path to the directory you want should go inside the quotation marks. Remember that you can use your tab key to help you autocomplete fields in R; that can be very useful for getting to precisely the right folder on your hard drive.
+
+```{r}
+
+setwd("")
+
+```
+
+
+# Getting Help with Functions
+
+One more useful thing to know. If you want to know what a particular function does, you can access help documentation using `?` or `help()`. So if you wanted to know what the `spread` function (from the package `tidyr`) does, you could run:
+
+?spread
+
+*or* 
+
+help(spread)
+
+
+# Reading in Tabular Data
+
+Depending on the structure of the data you wish to read into R, you will typically use `read.table`, `read.csv`, or `scan`. You can sometimes read data in from the web directly, as we did last week, but most often you will have data stored on your computer that you wish to bring into the R environment.
+
+
+# Browsing Tabular Data
+
+head
+
+tail
+
+summary
+
+The $ Operator
+
+gsub?
+
+
+# Manipulating Data Frames
+
+As we talk about different methods for manipulating the data in data frames, the [Data Wrangling Cheat Sheet](https://www.rstudio.com/wp-content/uploads/2015/02/data-wrangling-cheatsheet.pdf) will prove very helpful. We recommend you bookmark it, at least, and perhaps print it into a breviary you carry with you at all times for your R devotions. 
+
+gather
+
+spread
+
+group by
+
+filter
+
+mutate
+
+
+# Exercises
+
+1. Read in another file
+
+2. Regex on a colum using gsub?
+
+3. 
+
