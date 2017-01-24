@@ -18,23 +18,20 @@ If you've only browed files through a GUI you might not realize this, but your c
 At any given time, R refers to a particular "working directory" on your hard drive. Any paths to data you construct take this working directory as their root. So if my working directory is `"Dropbox/Teaching/HDA/s17hda-github/"` then invoking `"/data/crewlists.csv"` would begin from the working directory and look for a subdirectory called `data` and then a file within that working directory. Many, many times problems importing or working with data can be tracked down to R looking in the wrong working directory. So, to check your working directory, you can run:
 
 ```{r}
-
 getwd()
-
 ```
 
 If the working directory is not what you want, you can set it in two ways: through the menus for Session --> Set Working Directory or through the command below. The path to the directory you want should go inside the quotation marks. Remember that you can use your tab key to help you autocomplete fields in R; that can be very useful for getting to precisely the right folder on your hard drive.
 
 ```{r}
-
 setwd("")
-
 ```
 
+When you construct a file path in R, your working directory can be invoked with `.` and your computers home directory can be invoked with `~`. You can also tell R Studio to look backwards in the directory structure with `..` We'll experiment with this briefly over in the console. Keep in mind too that you can browse your files in in the `Files` pane of RStudio: it's over there next to `Environment`.
 
 # Getting Help with Functions
 
-One more useful thing to know. If you want to know what a particular function does, you can access help documentation using `?` or `help()`. So if you wanted to know what the `spread` function (from the package `tidyr`) does, you could run:
+Here's another useful thing to know. If you want to know what a particular function does, you can access help documentation using `?` or `help()`. So if you wanted to know what the `spread` function (from the package `tidyr`) does, you could run:
 
 ?spread
 
@@ -45,18 +42,54 @@ help(spread)
 
 # Reading in Tabular Data
 
-Depending on the structure of the data you wish to read into R, you will typically use `read.table`, `read.csv`, or `scan`. You can sometimes read data in from the web directly, as we did last week, but most often you will have data stored on your computer that you wish to bring into the R environment.
+Depending on the structure of the data you wish to read into R, you will typically use `read.table`, `read.csv`, or `scan`. You can sometimes read data in from the web directly, as we did last week, but most often you will have data stored on your computer that you wish to bring into the R environment. Often, if there is something even slightly askew about your input data, `read.table` will fail. This may be frustrating, but this failure is  a general feature of data analysis: programs that don't receive *exactly* the input the expect will simply fail to work, usually "throwing" an error message of some sort. You may have to spend some time troubleshooting your data itself to figure out why it won't import into R.
 
+If you have a file previously saved in the csv (comma-separated-value) format, it may be fast to read it it using the `read.csv` function. (This is simply `read.table` with a certain set of constraints.)
+
+In the example below, you'll need to modify the path in the quotation marks to navigate the folder in your file system to where you have stored the data files for this class. 
+
+```{r}
+census <- read.csv(file = "./data/1840-census-data.csv")
+```
+
+Note: we could write out the file path in other ways, depending on precisely how you've organized things.  
 
 # Browsing Tabular Data
 
-head
+If you type `View(clusters)` or click the table icon next to `clusters` in the Environment pane, you can visually browse the dataframe we just created.
 
-tail
+When we work with dataframes, we can operate on individual columns using the `$` operator. If we type `clusters$text` in the console, for instance, it would print all the values from that one column. We usually won't use this to print, however, but to select particular columns to operate on in other ways.
 
-summary
+Let's not forget some of the basic ways of browsing data we discussed last week. Can you write code below that print the first lines of the `census` dataframe? The last? Can you print the first or last lines of specific columns in `census`?
 
-The $ Operator
+```{r}
+
+
+
+```
+
+There are a few other fuctions worth knowing right off the bat. Run the code below: what does `summary` do?
+
+```{r}
+summary(census$Newspapers)
+summary(census$FreeColoredPopulation)
+```
+
+
+## Subsetting columns
+
+This is a very wide data frame of census data. In fact, it's a bit too wide for R studio, which will only display 100 columns in the table viewer; this table has 113 columns. For any given analysis task, we probably don't need all of the columns in such a wide data frame. Fortunately R and the `tidyverse` packages give us lots of ways to pare down the data we're working with. 
+
+Remember that last week we talked about changing variables. That's one way to pare down a dataset: essentially we invoke the dataframe, select only a few columns of it, and replace the variable with just those selected columns. That would look like this:
+
+
+
+Read in data with subset of columns
+
+Add column
+
+
+
 
 gsub?
 
@@ -64,6 +97,8 @@ gsub?
 # Manipulating Data Frames
 
 As we talk about different methods for manipulating the data in data frames, the [Data Wrangling Cheat Sheet](https://www.rstudio.com/wp-content/uploads/2015/02/data-wrangling-cheatsheet.pdf) will prove very helpful. We recommend you bookmark it, at least, and perhaps print it into a breviary you carry with you at all times for your R devotions. 
+
+change type of column data
 
 gather
 
