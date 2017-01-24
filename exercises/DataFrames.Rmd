@@ -1,5 +1,5 @@
 ---
-title: "Data Frames"
+title: "dataframes"
 author: "Ryan Cordell"
 date: "1/20/2017"
 output: html_document
@@ -78,25 +78,61 @@ summary(census$FreeColoredPopulation)
 
 ## Subsetting columns
 
-This is a very wide data frame of census data. In fact, it's a bit too wide for R studio, which will only display 100 columns in the table viewer; this table has 113 columns. For any given analysis task, we probably don't need all of the columns in such a wide data frame. Fortunately R and the `tidyverse` packages give us lots of ways to pare down the data we're working with. 
+This is a very wide dataframe of census data. In fact, it's a bit too wide for R studio, which will only display 100 columns in the table viewer; this table has 113 columns. For any given analysis task, we probably don't need all of the columns in such a wide dataframe. Fortunately R and the `tidyverse` packages give us lots of ways to pare down the data we're working with. 
 
-Remember that last week we talked about changing variables. That's one way to pare down a dataset: essentially we invoke the dataframe, select only a few columns of it, and replace the variable with just those selected columns. That would look like this:
+Remember that last week we talked about changing variables. That's one way to pare down a dataset: essentially we invoke the dataframe, select only a few columns of it using the `select` function in `dplyr`, and replace the whole variable with just those selected columns. That would look like this:
+
+```{r}
+census <- select(census, QualifyingAreaName, Newspapers, Newspapers_Daily, Newspapers_Weekly, Newspapers_SemiTriWeekly, Periodicals, PrintingOffices, Binderies, NumberofPersonsEmployedinPrintingBinding)
+```
+
+Now we have only 9 variables in our dataframe, which is focused on the data recorded about newspapers and printing in the census. In this case we overwrote the whole census variable with this smaller dataframe, but we could have created a new variable focused on printing (say `censusPrinting`) and retained the larger `census` variable as well. 
+
+If you know the data you're importing well, you can also select particular columns on import. I further truncated the columns below so you can see a difference:
+
+```{r}
+census <- read.csv(file="./data/1840-census-data.csv")[ , c("QualifyingAreaName", "Newspapers", "Newspapers_Daily", "Newspapers_Weekly", "Newspapers_SemiTriWeekly", "Periodicals", "PrintingOffices")]
+```
+
+We can also rename columns with, you guessed it, the `rename` function. That first column in `census` has an awkward name, so let's just change it:
+
+```{r}
+census <- rename(census, county = QualifyingAreaName)
+```
+
+There are also ways to subset by rows that meet particular conditions, as in:
+
+```{r}
+printCenters <- filter(census, PrintingOffices >= 5)
+```
+
+We can also add new columns with `mutate`. These new columns can include an entirely new bit of data we wish to add (this can be tricky; we can talk more about what this might mean in person) or can be derived from operations made on other columns, as in:
+
+```{r}
+census <- mutate(census, serials = Newspapers + Periodicals)
+head(census$serials)
+```
+
+Can you see what happened there?
+
+Finally (in this section), we can rearrange the dataframe. Keep in mind that `arrange` reorders the actual dataframe permanently, or as permanently as is possible in a variable. In later weeks we'll learn how to order things on the fly for particular operations without actually changing the structure of the dataframe itself. To sort by the number of serials in each county, we could write:
+
+```{r}
+census <- arrange(census, serials, Newspapers, Periodicals)
+```
+
+You only need to specify one column for `arrange` to work, but if you specify more it will use them in sequence, much as you use the letters in words in sequence when sorting into alphabetical order (e.g. first sort by `serials`, then by `Newspapers`, then by `Periodicals`). You'll note that by default `arrange` sorts in ascending order. If we wanted to instead order this dataframe to bring the most active print economies to the top, we would add `desc` to our code:  
+
+```{r}
+census <- arrange(census, desc(serials, Newspapers, Periodicals))
+```
+
+gsub to separate county and state for later grouping?
 
 
+# Manipulating Dataframes
 
-Read in data with subset of columns
-
-Add column
-
-
-
-
-gsub?
-
-
-# Manipulating Data Frames
-
-As we talk about different methods for manipulating the data in data frames, the [Data Wrangling Cheat Sheet](https://www.rstudio.com/wp-content/uploads/2015/02/data-wrangling-cheatsheet.pdf) will prove very helpful. We recommend you bookmark it, at least, and perhaps print it into a breviary you carry with you at all times for your R devotions. 
+Above we made some relatively minor changes to a dataframe, but in the next section we'll do a bit more. As we talk about different methods for manipulating the data in dataframes, the [Data Wrangling Cheat Sheet](https://www.rstudio.com/wp-content/uploads/2015/02/data-wrangling-cheatsheet.pdf) will prove very helpful. We recommend you bookmark it, at least, and perhaps print it into a breviary you carry with you at all times for your R devotions. 
 
 change type of column data
 
@@ -117,5 +153,5 @@ mutate
 
 2. Regex on a colum using gsub?
 
-3. 
+3. How many illiterate white men lived in Alabama in 1840?
 
