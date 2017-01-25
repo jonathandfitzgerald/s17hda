@@ -182,12 +182,16 @@ That's possibly interesting, but maybe we want to group by identification and th
 ```{r}
 census_long <- group_by(census_long, state, identification)
 census_ids <- summarize(census_long, total_ids = sum(count))
-
 ```
 
 ## Spread
 
+Spread, as you might imagine, does just the opposite of gather. It takes long data and makes it wide. So we can run the following to reshape our `census_long` dataframe into something very like the wide dataframe with which we began.
 
+```{r}
+census_wide <- spread(census_long, identification, count)
+View(census_wide)
+```
 
 
 
