@@ -13,7 +13,7 @@ library(tidyverse)
 
 # Navigating Files in R
 
-If you've only browed files through a GUI you might not realize this, but your computer's directories can be invoked through paths that look much like URLs. To illustrate this, we're going to browse around in your Terminals for a few minutes before we jump back into R.
+If you've only browsed files through a GUI you might not realize this, but your computer's directories can be invoked through paths that look much like URLs. To illustrate this, we're going to browse around in your Terminals for a few minutes before we jump back into R.
 
 At any given time, R refers to a particular "working directory" on your hard drive. Any paths to data you construct take this working directory as their root. So if my working directory is `"Dropbox/Teaching/HDA/s17hda-github/"` then invoking `"/data/crewlists.csv"` would begin from the working directory and look for a subdirectory called `data` and then a file within that working directory. Many, many times problems importing or working with data can be tracked down to R looking in the wrong working directory. So, to check your working directory, you can run:
 
@@ -194,14 +194,13 @@ View(census_wide)
 ```
 
 
-
-
 # Exercises
 
 1. Create a new column that shows the ratio of `FreeColoredPopulation` to `SlavePopulation` in each county. You may need to repeat some of the import steps above, and you can use a new variable if you wish. 
 
 2. Create a "long" dataframe with columns for "publication_type" (e.g. "Newspaper") and "count". 
 
+3. Something with importing their own data and manipulating it. Perhaps ask them to id if it's wide or long data and whether its current format is right for what they need.
 
 # Other?
 
