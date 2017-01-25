@@ -153,7 +153,7 @@ Let's start with `separate`, which will allow us to do something kind of like Re
 census <- separate(census, county, into = c("county", "state"), sep = "\\, ")
 ```
 
-That threw a few errors, though it made the separation anyway. If you wanted to investigate one of those problematic observations, you could type in the console `census[1259,]` (or sustitute any of the other rows for 1259). This is another way of selecting particular rows. In this case we're not entering anything after the comma because we want to see all the columns, but you could instead type `census[1259,1:2]` to see row 1259, columns 1-2.
+That threw a few errors, though `tidyr` made the separation anyway. If you wanted to investigate one of those problematic observations, you could type in the console `census[1259,]` (or sustitute any of the other rows for 1259). This is another way of selecting particular rows. In this case we're not entering anything after the comma because we want to see all the columns, but you could instead type `census[1259,1:2]` to see row 1259, columns 1-2.
 
 ## Gather
 
@@ -165,24 +165,38 @@ census <- select(census, 1,6:81)
 census <- rename(census, county = QualifyingAreaName)
 census_long <- gather(census, "identification", "count", 2:77)
 census_long <- separate(census_long, county, into = c("county", "state"), sep = "\\, ")
+census_long <- na.omit(census_long)
 ```
 
-spread
+## Group_by
 
-group by
+Why would we do this? Well, for one we could now use the `group_by()` function on our `identification` column to group all observations of the same identification, and then perform operations on those groups. 
 
-filter
+```{r}
+census_long <- group_by(census_long, identification)
+census_ids <- summarize(census_long, total_ids = sum(count))
+```
 
-mutate
+That's possibly interesting, but maybe we want to group by identification and then by state, so we can see how these categories break down by state. Fortunately we now have a state column, so we can do this:
+
+```{r}
+census_long <- group_by(census_long, state, identification)
+census_ids <- summarize(census_long, total_ids = sum(count))
+
+```
+
+## Spread
+
+
+
+
 
 
 # Exercises
 
-1. Read in another file
+1. Create a new column that shows the ratio of `FreeColoredPopulation` to `SlavePopulation` in each county. You may need to repeat some of the import steps above, and you can use a new variable if you wish. 
 
-2. Regex on a colum using gsub?
-
-3. How many illiterate white men lived in Alabama in 1840?
+2. Create a "long" dataframe with columns for "publication_type" (e.g. "Newspaper") and "count". 
 
 
 # Other?
