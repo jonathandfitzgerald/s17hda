@@ -75,6 +75,9 @@ summary(census$Newspapers)
 summary(census$FreeColoredPopulation)
 ```
 
+## A Note about Pipes
+
+Next week we will introduce pipes more fully, which will enable you to combine many of the functions we will learn today and write code with fewer steps. For today, however, I really want you thinking about what how each function transforms your data, so we're going to take everything one step at a time.
 
 ## Subsetting columns
 
@@ -127,6 +130,14 @@ You only need to specify one column for `arrange` to work, but if you specify mo
 census <- arrange(census, desc(serials, Newspapers, Periodicals))
 ```
 
+Okay: in the code block below, import the census data again (use a new variable name) and then select only 3-4 columns of interest. Then filter the dataframe by a value in one of those columns. 
+
+```{r}
+
+
+
+```
+
 gsub to separate county and state for later grouping?
 
 
@@ -134,9 +145,27 @@ gsub to separate county and state for later grouping?
 
 Above we made some relatively minor changes to a dataframe, but in the next section we'll do a bit more. As we talk about different methods for manipulating the data in dataframes, the [Data Wrangling Cheat Sheet](https://www.rstudio.com/wp-content/uploads/2015/02/data-wrangling-cheatsheet.pdf) will prove very helpful. We recommend you bookmark it, at least, and perhaps print it into a breviary you carry with you at all times for your R devotions. 
 
-change type of column data
+## Separate
 
-gather
+Let's start with `separate`, which will allow us to do something kind of like RegEx, but simpler, for colums we want to break apart that use a very consistent separator. The newly-renamed `county` column, for instance, actually includes both the county and the state, and since they are consistently divided by a comma and space, we can use the fuction below to separate them into two columns:
+
+```{r}
+census <- separate(census, county, into = c("county", "state"), sep = "\\, ")
+```
+
+That threw a few errors, though it made the separation anyway. If you wanted to investigate one of those problematic observations, you could type in the console `census[1259,]` (or sustitute any of the other rows for 1259). This is another way of selecting particular rows. In this case we're not entering anything after the comma because we want to see all the columns, but you could instead type `census[1259,1:2]` to see row 1259, columns 1-2.
+
+## Gather
+
+For these next functions we're going to reimport our census data but select a different set of columns: those describing the racial/ethnic/gender/age identification of the populations in each county. The current format of this data is "wide," meaning there are many columns of variables. For certain kinds of analyses, these column names are themselves variables, representing the identities of citizens, at least insofar as the census taker appraised them. We might want to `gather` our data into a "long" format, which means there will be many more rows but fewer columns, which will prove useful for certain kinds of analyses. Let's run the code below and talk through it together. If you want to see what each line is doing, run them using ctl-enter rather than the run button.
+
+```{r}
+census <- read.csv(file = "./data/1840-census-data.csv")
+census <- select(census, 1,6:81)
+census <- rename(census, county = QualifyingAreaName)
+census_long <- gather(census, "identification", "count", 2:77)
+census_long <- separate(census_long, county, into = c("county", "state"), sep = "\\, ")
+```
 
 spread
 
@@ -154,4 +183,9 @@ mutate
 2. Regex on a colum using gsub?
 
 3. How many illiterate white men lived in Alabama in 1840?
+
+
+# Other?
+
+change type of column data?
 
