@@ -169,7 +169,7 @@ raven %>%
 
 ```
 
-In addition to words, R makes it very easy to count (and compare, &c.) other units of language, such as bigrams, trigrams, and so forth. Units of n-length words are called "Ngrams." Below we're counting units of 5 words from our newspaper text data.
+In addition to words, R makes it very easy to count (and compare, &c.) other units of language, such as bigrams, trigrams, and so forth. Units of n-length words are called "Ngrams." When building an index of ngrams, each possible sequence of n words is recorded, as if a lens with a n-words-long aperture is sliding along the text, taking a snapshot at each position. Below we're counting units of 5 words from our newspaper text data.
 
 ```{r}
 

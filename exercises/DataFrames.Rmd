@@ -138,9 +138,6 @@ Okay: in the code block below, import the census data again (use a new variable 
 
 ```
 
-gsub to separate county and state for later grouping?
-
-
 # Manipulating Dataframes
 
 Above we made some relatively minor changes to a dataframe, but in the next section we'll do a bit more. As we talk about different methods for manipulating the data in dataframes, the [Data Wrangling Cheat Sheet](https://www.rstudio.com/wp-content/uploads/2015/02/data-wrangling-cheatsheet.pdf) will prove very helpful. We recommend you bookmark it, at least, and perhaps print it into a breviary you carry with you at all times for your R devotions. 
@@ -193,16 +190,10 @@ census_wide <- spread(census_long, identification, count)
 View(census_wide)
 ```
 
-
 # Exercises
 
 1. Create a new column that shows the ratio of `FreeColoredPopulation` to `SlavePopulation` in each county. You may need to repeat some of the import steps above, and you can use a new variable if you wish. 
-
 2. Create a "long" dataframe with columns for "publication_type" (e.g. "Newspaper") and "count". 
-
-3. Something with importing their own data and manipulating it. Perhaps ask them to id if it's wide or long data and whether its current format is right for what they need.
-
-# Other?
-
-change type of column data?
-
+3. Determine the state (not the county!) with the highest population of literate whites over 20 years old, then determine the state with the highest ratio of literate whites to general population.
+4. Read in `booktitles-sub.tsv`. You won't be able to use `read.csv` for this tsv file. See if you can figure out how to import a TSV using [Stack Overflow](http://stackoverflow.com/) or [RSeek](http://rseek.org/). Within this dataset, which year saw the most publications? What author was most prolific?
+5. Reach goal: What is the oldest children's book in `booktitles-sub.tsv`?
