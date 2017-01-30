@@ -56,9 +56,9 @@ Note: we could write out the file path in other ways, depending on precisely how
 
 # Browsing Tabular Data
 
-If you type `View(clusters)` or click the table icon next to `clusters` in the Environment pane, you can visually browse the dataframe we just created.
+If you type `View(census)` or click the table icon next to `census` in the Environment pane, you can visually browse the dataframe we just created.
 
-When we work with dataframes, we can operate on individual columns using the `$` operator. If we type `clusters$text` in the console, for instance, it would print all the values from that one column. We usually won't use this to print, however, but to select particular columns to operate on in other ways.
+When we work with dataframes, we can operate on individual columns using the `$` operator. If we type `census$Slave_Female` in the console, for instance, it would print all the values from that one column. We usually won't use this to print, however, but to select particular columns to operate on in other ways.
 
 Let's not forget some of the basic ways of browsing data we discussed last week. Can you write code below that print the first lines of the `census` dataframe? The last? Can you print the first or last lines of specific columns in `census`?
 
