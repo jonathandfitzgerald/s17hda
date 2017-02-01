@@ -1,0 +1,115 @@
+---
+title: "Exploratory Data Analysis"
+author: "Ryan Cordell"
+date: "1/31/2017"
+output: html_document
+---
+
+```{r}
+library(tidyverse)
+```
+
+# The Pipe Operator
+
+Last week we explictly invoked each function in a new line of code. Today we'll introduce the pipe operator `%>%`, which allows us to chain together a series of transformations. Let's illustrate this with a few familiar blocks from last week:
+
+```{r}
+census <- read.csv(file = "./data/1840-census-data.csv")
+census <- select(census, 1,6:81)
+census <- rename(census, county = QualifyingAreaName)
+census_long <- gather(census, "identification", "count", 2:77)
+census_long <- separate(census_long, county, into = c("county", "state"), sep = "\\, ")
+census_long <- na.omit(census_long)
+```
+
+Using pipes, we can chain together these operations like so, to create two variables:
+
+```{r}
+census <- read.csv(file = "./data/1840-census-data.csv") %>%
+  select(1,6:81) %>%
+  rename(county = QualifyingAreaName)
+
+census_long <- census %>%
+  gather("identification", "count", 2:77) %>%
+  separate(county, into = c("county", "state"), sep = "\\, ") %>%
+  na.omit(census_long)
+```
+
+Or like so, to create only one `census_long` variable (note that you'll have to clear your `Global Environment` before running this code to see it actually work.)
+
+```{r}
+census_long <- read.csv(file = "./data/1840-census-data.csv") %>%
+  select(1,6:81) %>%
+  rename(county = QualifyingAreaName) %>%
+  gather("identification", "count", 2:77) %>%
+  separate(county, into = c("county", "state"), sep = "\\, ") %>%
+  na.omit(census_long)
+```
+
+What did each of these do? We'll talk about that together.
+
+Note that there are some distinct structural differences when using pipes. For one, the variable being transformed is usually invoked at the beginning of the chain, and thus does not appear as an argument in the separate parts of the chain. Compare these piped operations with the line-by-line operations above again. Where do you see `census` or `census_long` invoked in lines 17-22 when they are not in lines 41-46? 
+
+We can also use pipes to make (and view) temporary transformations in our data that won't be saved as variables. This is a very useful way of seeing what a series of operations will do before "really" running them.
+
+```{r}
+census_long %>% 
+  spread(identification, count) %>%
+  View()
+```
+
+# Transforming Data Frames
+
+So what kinds of transformations might we want to make with dataframes? To begin thinking through that question, let's import a small sample of data from the Viral Texts Project. In the code box below, import the CSV `VT-vignettes.csv` from the class data folder:
+
+```{r}
+
+
+```
+
+There are *lots* of quirks in this data, which we'll talk through together. I want to use this data to talk about a few more features of dataframes in R and . First you'll notice that unlike our census data from last week, the different columns here comprise many different data types: text, numbers, dates, etc. Data types are important and sometimes frustrating in R; there are functions that can operate on strings (text data) but not other kinds. You can determine the data type of anything in R using the `class()` function:
+
+```{r}
+
+# you can investigate the class of a whole variable:
+class(vtClusters)
+# or of a variable within a dataframe
+class(vtClusters$text)
+class(vtClusters$date)
+```
+
+Notice anything about the class of our text and date column? By default, when creating dataframes R converts textual data—including numbers with typographical features, like the hyphens in our date column—to `factors`. One of the most human readable definitions of factors can be found at [https://www.r-bloggers.com/data-types-part-3-factors/](https://www.r-bloggers.com/data-types-part-3-factors/). In short, however, factors are wonderful for variables you might want summary statistics about, but not always wonderful for other data types. If we wanted to work with dates *qua* dates—to find out which reprints occurred earlier than others—a factor `date` column might not serve. Likewise for doing certain kinds of text analysis on the `text` column. 
+
+When importing tabular data we can include an argument that will `coerce` (read: force) strings to import as strings rather than factors. There are also functions in R for coercing one data type into another: `as.Date`,  `as.character`, `as.dataframe`, and so forth. Can you identify the two coercions in the code below?
+
+```{r}
+
+vtClusters <- read.csv(file="../s17hda-github/data/VT-vignettes.csv", stringsAsFactors=FALSE)
+vtClusters$date <- as.Date(vtClusters$date, "%Y-%m-%d")
+
+```
+
+Now check the class of the `text` and `date` columns in the console.
+
+```{r}
+
+vtClusters <- as_data_frame(read.csv(file="../s17hda-github/data/VT-vignettes.csv")[ , c("cluster", "date", "title")]) %>% 
+  mutate(title = gsub('(.*)\\.*\\(.*','\\1',title)) %>%
+  mutate(date = as.Date(date, "%Y-%m-%d"))
+
+```
+
+
+# Coercion? 
+as.character
+as.numeric
+as.date
+
+
+## Tokenization?
+
+When workin with text in R (or many other programming languages, and in the field of corpus linguistics), the term "word" is ignored in favor of the idea of a "token" or "type." Where "word"" is more abstract, a "token" is a concrete term used in actual language, and a "type" is the particular string we're interested in.
+
+Breaking a piece of text into words is thus called "tokenization." There are many ways to do it, but the simplest is to simply to remove anything from a string that isn't a letter. Using regular expression syntax, the R function `strsplit` lets us do just this: split a string into pieces. We'll use the regular expression `[^A-Za-z]` to say "split on anything that isn't a letter between A and Z." Note, for example, that this makes the word "Don't" into two words.
+
+
