@@ -109,14 +109,56 @@ Now type `vtClusters` into the console again to see what prints. Notice the diff
 
 ## From Bibliography to Network
 
+One of the transformations I most often need for Viral Texts brings us from a list of reprints organized in "clusters"—essentially ennumerative bibliographies—to data that expresses the network relationships among newspapers within those clusters. Essentially I want to reorganize the table so that co-membership in a given cluster creates a line of "edge" data between all the newspapers within that cluster. If that doesn't make sense, run the code below and we'll talk through what it does and the transformation it produces. 
 
+```{r}
 
+vtClusters <- as_data_frame(read.csv(file="../s17hda-github/data/VT-vignettes.csv")[ , c("cluster", "date", "title")]) %>% 
+  mutate(title = gsub('(.*)\\.*\\(.*','\\1',title)) %>%
+  mutate(date = as.Date(date, "%Y-%m-%d")) %>%
+  full_join(vtClusters, vtClusters, by = "cluster") %>%
+  filter(date.x < date.y) %>%
+  View()
 
+```
 
-## Tokenization?
+We could also structure things to put the new edges table into a new variable:
 
-When workin with text in R (or many other programming languages, and in the field of corpus linguistics), the term "word" is ignored in favor of the idea of a "token" or "type." Where "word"" is more abstract, a "token" is a concrete term used in actual language, and a "type" is the particular string we're interested in.
+```{r}
 
-Breaking a piece of text into words is thus called "tokenization." There are many ways to do it, but the simplest is to simply to remove anything from a string that isn't a letter. Using regular expression syntax, the R function `strsplit` lets us do just this: split a string into pieces. We'll use the regular expression `[^A-Za-z]` to say "split on anything that isn't a letter between A and Z." Note, for example, that this makes the word "Don't" into two words.
+vtClusters <- as_data_frame(read.csv(file="../s17hda-github/data/VT-vignettes.csv")[ , c("cluster", "date", "title")]) %>% 
+  mutate(title = gsub('(.*)\\.*\\(.*','\\1',title)) %>%
+  mutate(date = as.Date(date, "%Y-%m-%d"))
 
+vtDirected <- full_join(vtClusters, vtClusters, by = "cluster") %>%
+  filter(date.x < date.y)
+View(vtDirected)
 
+```
+
+So now we have a dataframe expressing every possible edge derived from the cluster data provided. From here we might decide to add even more nuance. In most network graphs, every observed relationship between two entities is assigned a weight of 1, and when two entities are connected multiple times (in this case, when two newspapers are members of multiple clusters) the overall weight of their relationship increases by 1 for each observation. 
+
+Recently, however, I've been experimenting with other ways of weighting relationships based on features in my reprinting data. For instance, how might we adjust our weights based on the time lag between two observed reprintings of the same text? The code below is one experiment I've made along those lines; we can talk through my logic once you run it. 
+
+```{r}
+
+vtEdges <- vtDirected %>%
+  mutate(lag = date.y - date.x) %>%
+  mutate(lagWeight = 1 / as.numeric(lag)) %>%
+  group_by(title.x,title.y) %>%
+  summarise(lag =mean(lag), weight = sum(lagWeight), rawWeight = n()) %>%
+  mutate(lagEffect = weight - rawWeight) %>%
+  arrange(desc(weight)) %>%
+  rename(source = title.x, target = title.y)
+
+View(vtEdges)
+
+```
+
+Before we move on, I realize that we haven't yet discussed how to output data *from* Rstudio. Like importing data, there are different functions for exporting different data formats. If we wanted to export a CSV of our network data—to import into network software like Gephi, say—we could do the following:
+
+```{r}
+
+write.csv(vtEdges, file="./output/vtEdges.csv")
+
+```
