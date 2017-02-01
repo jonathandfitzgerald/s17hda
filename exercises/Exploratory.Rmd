@@ -89,21 +89,28 @@ vtClusters$date <- as.Date(vtClusters$date, "%Y-%m-%d")
 
 ```
 
-Now check the class of the `text` and `date` columns in the console.
+Now check the class of the `text` and `date` columns in the console. Also type `vtClusters` into the console to see what prints.
+
+## Tibbles
+
+Most recently, lots of folks have moved away from base R's dataframes and to "tibbles", which are essentially a new protocol for creating dataframes developed by Hadley Wickham, of Tidyverse fame. You can read more about tibbles using the command `vignette("tibble")` in the console. In most ways they act just like dataframes, and indeed they are a subspecies of dataframe, but they correct a few annoyances of the dataframe. One big one: when importing data into a tibble the data types and column names will not be converted, so you need not convert strings to factors. Other fields, such as dates, might still need to be coerced. 
+
+To convert data into a tibble, you can use the functions `as_data_frame` (with underscores, not periods) or `as_tibble`. You can either convert an existing dataframe or do this upon importing new data. Below we're going to use pipes to import our Viral Texts data as a tibble, coerce the date column into the date class, and do one other thing. Can you tell what that is?
 
 ```{r}
 
-vtClusters <- as_data_frame(read.csv(file="../s17hda-github/data/VT-vignettes.csv")[ , c("cluster", "date", "title")]) %>% 
+vtClusters <- as_tibble(read.csv(file="../s17hda-github/data/VT-vignettes.csv")) %>% 
   mutate(title = gsub('(.*)\\.*\\(.*','\\1',title)) %>%
   mutate(date = as.Date(date, "%Y-%m-%d"))
 
 ```
 
+Now type `vtClusters` into the console again to see what prints. Notice the difference? The print behavior of tibbles is far less loquacious than standard data frames. Before we move on, can you write some code into the code block above so that our final `vtClusters` dataframe includes **only** the `cluster`, `date`, and `title` columns?
 
-# Coercion? 
-as.character
-as.numeric
-as.date
+## From Bibliography to Network
+
+
+
 
 
 ## Tokenization?
