@@ -259,3 +259,8 @@ allWRIGHTwords = allWRIGHTwords[,c("filename","word","word2","word3")]
 ## Let's take a random walk
 
 Okay, that's really all we need to do this week, but just for fun, let's try out a trick that Ben Schmidt showed me in his HDA class. We're going to create a "Random Walk Generator". 
+
+
+# Exercises
+
+In the `allWRIGHTtext` dataframe, you'll notice that each text contains metadata about the text before the actual text begins. Using `gsub()` and regular expressions, can you remove the metadata?
