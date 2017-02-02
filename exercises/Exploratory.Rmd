@@ -482,4 +482,8 @@ census_long <- separate(census_long, county, into = c("county", "state"), sep = 
 census_long <- na.omit(census_long)
 ```
 
-3. 
+3. What is the longest single text in the `VT-vignettes.csv` dataset? What is the longest overall text by cluster?
+
+4. For this exercise, you should assemble your own corpus of *no fewer than **five** distinct texts* and read them into R as a tibble. What is the most common word in your corpus? What is the most common trigram? Just to make this even more challenging/meaningful, exclude most common words, or "stop words." The `tidytext` package has a built in data frame featuring 1,149 stop words. Do `?stop_words` to learn more.
+
+5. (reach goal) 
