@@ -466,3 +466,12 @@ and
 >I suppose he has the main point were as empty and then and likewise to place myself during the cessation
 
 Fun stuff.
+
+# Exercises
+
+In the `allWRIGHTtext` dataframe, you'll notice that each text contains metadata about the text before the actual text begins. Using `gsub()` and regular expressions, can you remove the metadata?
+
+```{r}
+
+
+```
