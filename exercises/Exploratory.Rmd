@@ -106,8 +106,6 @@ vtClusters <- as_tibble(read.csv(file="./data/VT-vignettes.csv")) %>%
   mutate(title = gsub('(.*)\\.*\\(.*','\\1',title)) %>%
   mutate(date = as.Date(date, "%Y-%m-%d"))
 
-vtClusters <- vtClusters[ , c("cluster", "date", "title")]
-
 ```
 
 Now type `vtClusters` into the console again to see what prints. Notice the difference? The print behavior of tibbles is far less loquacious than standard data frames. Before we move on, can you write some code into the code block above so that our final `vtClusters` dataframe includes **only** the `cluster`, `date`, and `title` columns?
