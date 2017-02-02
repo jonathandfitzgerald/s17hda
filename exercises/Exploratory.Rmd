@@ -486,4 +486,4 @@ census_long <- na.omit(census_long)
 
 4. For this exercise, you should assemble your own corpus of *no fewer than **five** distinct texts* and read them into R as a tibble. What is the most common word in your corpus? What is the most common trigram? Just to make this even more challenging/meaningful, exclude most common words, or "stop words." The `tidytext` package has a built in data frame featuring 1,149 stop words. Do `?stop_words` to learn more.
 
-5. (reach goal) 
+5. (reach goal) Create a random vignette! Using the method we utilized to create a random walk generator from the Wright texts to create a random vignette from the Viral Texts data. Remember that this process started way back at the beginning with tokenizing the Wright texts, so you'll need to tokenize the vignettes. Then, once you get the random walk generator up and running, stop it when you feel like you have something worth sharing and copy and paste the output here.
