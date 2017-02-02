@@ -471,7 +471,7 @@ Fun stuff.
 
 1. In the `allWRIGHTtext` dataframe, you'll notice that each text contains metadata about the text before the actual text begins. Using `gsub()` and regular expressions, can you remove the metadata?
 
-2. Below I've pasted a series of operations we performed on the census dataset last week. Can you restructure this into a single operation that uses pipes to reach the same long-format dataset?
+2. Below I've pasted a series of operations we performed on the census dataset last week. Can you restructure this into a single operation that uses pipes to reach the same long-format dataframe?
 
 ```{r}
 census <- read.csv(file = "./data/1840-census-data.csv")
