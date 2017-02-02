@@ -235,7 +235,7 @@ wrightWords = wrightWords %>% filter(word != "")
 
 ```
 
-Here, we're overwriting the dataframe with a new dataframe that we've filtered to include only words that are not equal to (`!=`) nothing. This is a good time to explain the syntax you see here for not equal to. In R, as well as in a lot of other programming language, to indicate that something is equal you use two equal signs (`==`). Not equal, as we've seen, is `!=`. You can also use greater than (`>`), less than (`<`), greater than or equal to (`>=`), or less than or equal to (`<=`).
+Here, we're overwriting the dataframe with a new dataframe that we've filtered to include only words that are not equal to (`!=`) nothing. This is a good time to explain the syntax you see here for not equal to. In R, as well as in a lot of other programming languages, to indicate that something is equal you use two equal signs (`==`). Not equal, as we've seen, is `!=`. You can also use greater than (`>`), less than (`<`), greater than or equal to (`>=`), or less than or equal to (`<=`).
 
 ## Word Counts
 
@@ -406,7 +406,7 @@ Above, we created a concordance for the single text. Can you create a concordanc
 
 ```
 
-You'll probably notice that your new dataframe's columns seem a bit out of order. Here's a quick trick for reordering columns:
+You'll probably notice that your new dataframe's columns seem a bit out of order. Here's a quick trick for reordering columns (I also could've just set the column order properly in the function above):
 
 ```{r}
 
@@ -430,7 +430,7 @@ transitions = allWRIGHTwords %>%
 
 ```
 
-We are creating a new dataframe in which we create a new column `word1Count` which is a count of the number of times a word appears in our data. If you were to run the code only as far as this, you'd see, for example that the word "CITATION" appears 100 times, once at the top of each text. From there, however we group by both the first word and the second word and calculate the cance that the second word will follow the first.
+We are creating a new dataframe in which we create a new column `word1Count` which is a count of the number of times a word appears in our data. If you were to run the code only as far as this, you'd see, for example that the word "CITATION" appears 100 times, once at the top of each text. From there, however we group by both the first word and the second word and calculate the chance that the second word will follow the first.
 
 From there we create a function to randomly select a next word based on the probability that it will follow the previous word. 
 
