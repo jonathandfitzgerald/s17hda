@@ -62,10 +62,11 @@ census_long %>%
 
 # Part One, Transforming Data Frames
 
-So what kinds of transformations might we want to make with dataframes? To begin thinking through that question, let's import a small sample of data from the Viral Texts Project. In the code box below, import the CSV `VT-vignettes.csv` from the class data folder:
+So what kinds of transformations might we want to make with dataframes? To begin thinking through that question, let's import a small sample of data from the Viral Texts Project. In the code box below, import the CSV `VT-vignettes.csv` from the class data folder (for consistency, let's call the variable `vtClusters`):
 
 ```{r}
 
+vtClusters <- read.csv(file = "./data/VT-vignettes.csv")
 
 ```
 
@@ -86,7 +87,7 @@ When importing tabular data we can include an argument that will `coerce` (read:
 
 ```{r}
 
-vtClusters <- read.csv(file="../s17hda-github/data/VT-vignettes.csv", stringsAsFactors=FALSE)
+vtClusters <- read.csv(file="./data/VT-vignettes.csv", stringsAsFactors=FALSE)
 vtClusters$date <- as.Date(vtClusters$date, "%Y-%m-%d")
 
 ```
@@ -101,9 +102,11 @@ To convert data into a tibble, you can use the functions `as_data_frame` (with u
 
 ```{r}
 
-vtClusters <- as_tibble(read.csv(file="../s17hda-github/data/VT-vignettes.csv")) %>% 
+vtClusters <- as_tibble(read.csv(file="./data/VT-vignettes.csv")) %>% 
   mutate(title = gsub('(.*)\\.*\\(.*','\\1',title)) %>%
   mutate(date = as.Date(date, "%Y-%m-%d"))
+
+vtClusters <- vtClusters[ , c("cluster", "date", "title")]
 
 ```
 
@@ -115,7 +118,7 @@ One of the transformations I most often need for Viral Texts brings us from a li
 
 ```{r}
 
-vtClusters <- as_data_frame(read.csv(file="../s17hda-github/data/VT-vignettes.csv")[ , c("cluster", "date", "title")]) %>% 
+vtClusters <- as_data_frame(read.csv(file="./data/VT-vignettes.csv")[ , c("cluster", "date", "title")]) %>% 
   mutate(title = gsub('(.*)\\.*\\(.*','\\1',title)) %>%
   mutate(date = as.Date(date, "%Y-%m-%d")) %>%
   full_join(vtClusters, vtClusters, by = "cluster") %>%
@@ -128,7 +131,7 @@ We could also structure things to put the new edges table into a new variable:
 
 ```{r}
 
-vtClusters <- as_data_frame(read.csv(file="../s17hda-github/data/VT-vignettes.csv")[ , c("cluster", "date", "title")]) %>% 
+vtClusters <- as_data_frame(read.csv(file="./data/VT-vignettes.csv")[ , c("cluster", "date", "title")]) %>% 
   mutate(title = gsub('(.*)\\.*\\(.*','\\1',title)) %>%
   mutate(date = as.Date(date, "%Y-%m-%d"))
 
@@ -185,7 +188,7 @@ Here, we're creating a new variable called `text` by scanning in the data from t
 
 ## Tokenization
 
-Having the full text is nice, but in order to perform some analysis on this text, it will be helpful to break the text up into words. Breaking a piece of text into words is called "tokenization." There are many ways to do it, but the simplest is to simply to remove anything that isn't a letter. Using regular expression syntax, the R function `strsplit` lets us do just this: split a string into pieces. We'll use the regular expression `[^A-Za-z]` to say "split on anything that isn't a letter between A and Z." Note, for example, that this makes the word "Don't" into two words.
+Having the full text is nice, but in order to perform some analysis on this text, it will be helpful to break the text up into words. Breaking a piece of text into words is called "tokenizing." There are many ways to do it, but the simplest is to simply to remove anything that isn't a letter. Using regular expression syntax, the R function `strsplit` lets us do just this: split a string into pieces. We'll use the regular expression `[^A-Za-z]` to say "split on anything that isn't a letter between A and Z." Note, for example, that this makes the word "Don't" into two words.
 
 ```{r}
 
@@ -216,7 +219,13 @@ wrightWords = data.frame(word=words,stringsAsFactors = "false")
 
 ```
 
-Now we've created a dataframe called `wrightWords`. The `stringsAsFactors` argument tells it that we don't want to convert the strings to factors and instead want to leave them as characters. In R, a factor is a data type that contain variables that R encodes for you. So, a factor for "Employment Status" might include variables such as "Employed" and "Unemployed". But, again, this is not relevant to what we're doing here, just thought you'd like to know.
+Now we've created a dataframe called `wrightWords`. The `stringsAsFactors` argument tells it that we don't want to convert the strings to factors and instead want to leave them as characters. We could also do this, as above, by creating a tibble.
+
+```{r}
+
+wrightWords = tibble(word=words)
+
+```
 
 ## Removing Blank Observations
 
@@ -232,7 +241,7 @@ Here, we're overwriting the dataframe with a new dataframe that we've filtered t
 
 ## Word Counts
 
-Okay, now that we have this in a dataframe will all the words and no blank spaces, let's start doing some analysis. One of the most basic forms of analysis is counting words. In order to do this we're going to need to pipe together a few functions. First, we'll create a new dataframe called `wordcounts`. Then because we want to count the total number of each word, we'll use `group_by(word)`. Here, `word` is the name of column, or variable, and just as it says, this arranges variables into groups. Next, we use the `summarize()` function, which summarizes multiple values into a single value, and the single value we want is going to be called `count`. `n()` is a variable that means the number of obserations in a group. Finally, we're using the `arrange()` function to arrange the dataframe by the `count` column in descending order (as indicated by the `-`). Try it out:
+Okay, now that we have this in a dataframe with all the words and no blank spaces, let's start doing some analysis. One of the most basic forms of analysis is counting words. In order to do this we're going to need to pipe together a few functions. First, we'll create a new dataframe called `wordcounts`. Then because we want to count the total number of each word, we'll use `group_by(word)`. Here, `word` is the name of the column, or variable, and just as it says, this arranges variables into groups. Next, we use the `summarize()` function, which summarizes multiple values into a single value, and the single value we want is going to be called `count`. `n()` is a variable that means the number of obserations in a group. Finally, we're using the `arrange()` function to arrange the dataframe by the `count` column in descending order (as indicated by the `-`). Try it out:
 
 ```{r}
 
@@ -270,7 +279,7 @@ lead(numbers,1)
 
 We created a list of numbers, 1-5, and then ask it first to "lag" or go back by one, and then "lead" or go forward by one.
 
-By using `lag` on a character vector, we can neatly align one series of text with the words that follow. Below we use `mutate()` again to add another new column, which we call `word2` and indicate that the value of that column should be the value of `word` led by 1.
+By using `lead` on a character vector, we can neatly align one series of text with the words that follow. Below we use `mutate()` again to add another new column, which we call `word2` and indicate that the value of that column should be the value of `word` led by 1.
 
 ```{r}
 
@@ -306,11 +315,11 @@ WRIGHT = list.files("data/wright-txt",full.names = TRUE)
 
 ```
 
-Using the `list.files()` function, we point to the folder where our files are stored. 
+Using the `list.files()` function, we point to the folder where our files are stored and create a list of all the filenames there. 
 
 ## Building a Function
 
-Next, we're going to build our own function. This gets a little complicated, but what you really need to know is that a function is used to perform several operations at once. We have used lots of functions thus far, but R allows you to write you own. We could even save this function in a separate `.R` file and call it from lots of different scripts. This is one way to store operations you use frequently so you don't have to rewrite the code for them each time you need them. We will delve into writing functions more later, but for now, run the following and I'll explain the various parts below:
+Next, we're going to build our own function. This gets a little complicated, but what you really need to know is that a function is used to perform several operations at once. We have used lots of pre-made functions thus far, but R allows you to write you own. We could even save this function in a separate `.R` file and call it from lots of different scripts. This is one way to store operations you use frequently so you don't have to rewrite the code for them each time you need them. We will delve into writing functions more later, but for now, run the following and I'll explain the various parts below:
 
 ```{r}
 
@@ -323,7 +332,9 @@ readWRIGHTtext = function(file) {
 
 ```
 
-The first thing to note here is that after you run the above code it will look like nothing has happened. But, what _has_ happened is that function has been stored by R for later use. You can see it if you scroll to the bottom of your "Environment" window (to the right for most of you). This particular function takes as its starting point the individual file. Then it creates a variable called `text` in which it scans the contents of the file (just like we did above). Then, it creates a kind of temporary dataframe, in this case called `WRIGHT` where in there are two columns "filename", which will be the name of the file and "text." 
+The first thing to note here is that after you run the above code it will look like nothing has happened. But, what _has_ happened is that function has been stored by R for later use. You can see it if you scroll to the bottom of your "Environment" window (to the right for most of you). 
+
+This particular function takes as its starting point the individual file. Then it creates a variable called `text` in which it scans the contents of the file (just like we did above). Then, it creates a kind of temporary dataframe, in this case called `WRIGHT`, wherein there are two columns "filename", which will be the name of the file and "text." 
 
 ## Running the Function
 
@@ -409,3 +420,49 @@ allWRIGHTwords = allWRIGHTwords[,c("filename","word","word2","word3")]
 
 Okay, that's really all we need to do this week, but just for fun, let's try out a trick that Ben Schmidt showed me in his HDA class. We're going to create a "Random Walk Generator". 
 
+First, we need to calculate the probability that one word will follow another. To do this, run the code below:
+
+```{r}
+
+transitions = allWRIGHTwords %>% 
+  group_by(word) %>% 
+  mutate(word1Count=n()) %>% 
+  group_by(word,word2) %>% 
+  summarize(chance = n()/word1Count[1])
+
+```
+
+We are creating a new dataframe in which we create a new column `word1Count` which is a count of the number of times a word appears in our data. If you were to run the code only as far as this, you'd see, for example that the word "CITATION" appears 100 times, once at the top of each text. From there, however we group by both the first word and the second word and calculate the cance that the second word will follow the first.
+
+From there we create a function to randomly select a next word based on the probability that it will follow the previous word. 
+
+```{r}
+
+findNextWord = function(current) {
+  subset = transitions %>% filter(word==current)
+  nextWord = sample(subset$word2,1,prob = subset$chance)
+}
+
+```
+
+Finally, when we run the function, we'll see the console begin printing out words that should, if this is working right, make some logical sense (the logic breaks down after a while). Try it out:
+
+```{r}
+
+word = "I"
+while(TRUE) {
+  message(word)
+  word = findNextWord(word)
+}
+
+```
+
+In our data, which includes fiction written by different authors (although all nineteenth century writers), this can feel a bit more random, but if you were working with a corpus from a single author, the randomly generated text actually _sounds_ a bit like the author, albeit if the author wrote nonsense. I tried this out with a corpus of Dickens' texts with the shortlived notion that I'd create a twitterbot called Automatic Dickens. I created two tweet-length pieces that read:
+
+>I am much the better he said that he had considered how I must tell you I do carry it
+
+and 
+
+>I suppose he has the main point were as empty and then and likewise to place myself during the cessation
+
+Fun stuff.
