@@ -5,7 +5,7 @@ date: "2/1/2017"
 output: html_document
 ---
 
-Load `tidyverse` before we get started, and make sure your working directory is set correctly (`checkwd()` and `setwd()`).
+Load `tidyverse` before we get started, and make sure your working directory is set correctly (`getwd()` and `setwd()`).
 
 ```{r}
 library(tidyverse)
@@ -102,7 +102,7 @@ To convert data into a tibble, you can use the functions `as_data_frame` (with u
 
 ```{r}
 
-vtClusters <- as_tibble(read.csv(file="./data/VT-vignettes.csv")) %>% 
+vtClusters <- read_csv(file="./data/VT-vignettes.csv") %>% 
   mutate(title = gsub('(.*)\\.*\\(.*','\\1',title)) %>%
   mutate(date = as.Date(date, "%Y-%m-%d"))
 
@@ -116,7 +116,9 @@ One of the transformations I most often need for Viral Texts brings us from a li
 
 ```{r}
 
-vtClusters <- as_data_frame(read.csv(file="./data/VT-vignettes.csv")[ , c("cluster", "date", "title")]) %>% 
+vtClusters <- vtClusters[ , c("cluster", "date", "title")]
+
+vtClusters %>%
   mutate(title = gsub('(.*)\\.*\\(.*','\\1',title)) %>%
   mutate(date = as.Date(date, "%Y-%m-%d")) %>%
   full_join(vtClusters, vtClusters, by = "cluster") %>%

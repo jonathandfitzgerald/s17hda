@@ -1,0 +1,105 @@
+---
+title: "Visualization"
+author: "Ryan Cordell"
+date: "2/6/2017"
+output: html_document
+---
+
+Load 'em up:
+
+```{r}
+library(ggplot2)
+library(tibble)
+```
+
+One of the primary reasons data analysts gravitate toward R is its capacity for creating visualizations. In today's lesson we cannot possibly cover all these possibilities—and we will leave one huge category of visualization, the map, for next week—but we will survey some of the most prevelant types of data visualization in humanistic scholarship. 
+
+Graphs, charts, and other forms of data viz have become increasingly common in literary-historical research in the past decade, though humanists have not necessary developed sufficiently sophisticated frameworks for understanding their creation or their epistemological status. As we work through these practical exercises, then, we should discuss also what visualizations reveal and conceal about the data they represent, and consider the evidentiary functions they might serve. 
+
+Okay, let's load some data:
+
+```{r}
+census <- read_csv(file = "./data/1840-census-data.csv") %>%
+  select(1,90:107) %>%
+  rename(county = QualifyingAreaName) %>%
+  separate(county, into = c("county", "state"), sep = "\\, ")
+```
+
+
+## The philosophy of `ggplot`
+
+Today we will work mostly with `ggplot2`—included in the `tidyverse`—which implements a "grammar of graphics"—hence "gg"—in the R environment. `ggplot2` uses a philosophy of chaining that should be familiar from your work with dplyr. While the order of the chain in `dplyr` is paramount, `ggplot` is a little more flexible. You have to create a plot using the `ggplot()` function: but then you can add elements to it in an order that's not always strictly proscribed. But in creating a plot, you'll certainly have to do each of the following (though sometimes just implicitly):
+
+1. Select a data source
+2. Choose a geometry, or plot type
+3. Set an aesthetic mapping (more on this below)
+4. Set your scales
+5. Set your facets
+6. Other things
+
+
+```{r}
+
+ggplot(census) +
+  geom_point(mapping = aes(x = Periodicals, y = LiterateWhiteAge20andOver))
+
+```
+
+```{r}
+ggplot(census) + 
+  geom_point(mapping = aes(x = Periodicals, y = LiterateWhiteAge20andOver)) +
+  geom_smooth(mapping = aes(x = Periodicals, y = LiterateWhiteAge20andOver))
+```
+
+## Histograms
+
+Since last week I figured out why my tibbles weren't funtioning as I expected: in short, there's also a new function for importing CSVs (`read_csv` with an underscore) that imports directly into a tibble. To see one difference, check the class of the `text` column after importing the Viral Texts data below.
+
+```{r}
+
+vtClusters <- read_csv(file="./data/VT-vignettes.csv") %>% 
+  mutate(title = gsub('(.*)\\.*\\(.*','\\1',title)) %>%
+  mutate(date = as.Date(date, "%Y-%m-%d"))
+
+```
+
+
+
+```{r}
+
+ggplot(vtClusters %>% filter(cluster == 321785)) + geom_histogram(aes(x=date, binwidth=365))
+
+```
+
+```{r}
+
+ggplot(vtClusters %>% filter(cluster == 355594)) + geom_histogram(aes(x=date))
+
+```
+
+
+```{r}
+
+ggplot(vtClusters %>% filter(cluster == 321785 | cluster == 422907), aes(x=date, fill=cluster)) + geom_histogram(binwidth=365)
+
+ggplot(vtClusters %>% filter(cluster == 321785 | 422907), aes(x=date, fill=cluster)) + geom_freqpoly(binwidth=365, position = "stack")
+
+```
+
+## Barplot
+
+## Scatterplots
+
+## 
+
+other stuff to include:
+
+how scale changes what visualizations show/mean
+
+changing axes 
+
+aesthetics: changing labels, sizes, etc. 
+
+
+# Exercises
+

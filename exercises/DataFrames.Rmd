@@ -194,6 +194,37 @@ View(census_wide)
 
 1. Create a new column that shows the ratio of `FreeColoredPopulation` to `SlavePopulation` in each county. You may need to repeat some of the import steps above, and you can use a new variable if you wish. 
 2. Create a "long" dataframe with columns for "publication_type" (e.g. "Newspaper") and "count". 
+
+```{r}
+census <- read.csv(file="./data/1840-census-data.csv")[ , c("QualifyingAreaName", "Newspapers", "Newspapers_Daily", "Newspapers_Weekly", "Newspapers_SemiTriWeekly", "Periodicals", "PrintingOffices")]
+census <- rename(census, county = QualifyingAreaName)
+census_long <- gather(census, "publication_type", "count", 2:7)
+census_long <- separate(census_long, county, into = c("county", "state"), sep = "\\, ")
+census_long <- na.omit(census_long)
+```
+
 3. Determine the state (not the county!) with the highest population of literate whites over 20 years old, then determine the state with the highest ratio of literate whites to general population.
+
+```{r}
+census <- read_csv(file="./data/1840-census-data.csv")
+census <- rename(census, county = QualifyingAreaName)
+census <- separate(census, county, into = c("county", "state"), sep = "\\, ")
+census <- group_by(census, state)
+literate <- summarize(census, totalLit = sum(LiterateWhiteAge20andOver))
+literate <- arrange(literate, desc(totalLit))
+
+```
+
+```{r}
+census <- read_csv(file="./data/1840-census-data.csv")
+census <- rename(census, county = QualifyingAreaName)
+census <- separate(census, county, into = c("county", "state"), sep = "\\, ")
+census <- group_by(census, state)
+literate <- summarize(census, totalLit = sum(LiterateWhiteAge20andOver) / sum(TotalPopulation))
+literate <- arrange(literate, desc(totalLit))
+
+```
+
+
 4. Read in `booktitles-sub.tsv`. You won't be able to use `read.csv` for this tsv file. See if you can figure out how to import a TSV using [Stack Overflow](http://stackoverflow.com/) or [RSeek](http://rseek.org/). Within this dataset, which year saw the most publications? What author was most prolific?
 5. Reach goal: What is the oldest children's book in `booktitles-sub.tsv`?
