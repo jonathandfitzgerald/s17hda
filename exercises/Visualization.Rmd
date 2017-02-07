@@ -103,3 +103,11 @@ aesthetics: changing labels, sizes, etc.
 
 # Exercises
 
+I am making some changes down here at the bottom just to see what happens. Here is a code block:
+
+```{r}
+
+print("Hello world.")
+
+```
+
