@@ -16,7 +16,7 @@ One of the primary reasons data analysts gravitate toward R is its capacity for 
 
 Graphs, charts, and other forms of data viz have become increasingly common in literary-historical research in the past decade, though humanists have not necessary developed sufficiently sophisticated frameworks for understanding their creation or their epistemological status. As we work through these practical exercises, then, we should discuss also what visualizations reveal and conceal about the data they represent, and consider the evidentiary functions they might serve. 
 
-Okay, let's load some data:
+Okay, let's load some data. I figured out why our tibbles weren't loading correctly last week. Along with the new dataframe protocol, there's a new function for reading in tabular data, `read_csv` (with an underscore):
 
 ```{r}
 census <- read_csv(file = "./data/1840-census-data.csv") %>%
@@ -53,7 +53,7 @@ ggplot(census) +
 
 ## Histograms
 
-Since last week I figured out why my tibbles weren't funtioning as I expected: in short, there's also a new function for importing CSVs (`read_csv` with an underscore) that imports directly into a tibble. To see one difference, check the class of the `text` column after importing the Viral Texts data below.
+Not that we're using `read_csv` to import directly into a tibble. To see one difference, check the class of the `text` column after importing the Viral Texts data below.
 
 ```{r}
 
@@ -62,7 +62,6 @@ vtClusters <- read_csv(file="./data/VT-vignettes.csv") %>%
   mutate(date = as.Date(date, "%Y-%m-%d"))
 
 ```
-
 
 
 ```{r}
