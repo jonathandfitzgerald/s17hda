@@ -86,7 +86,7 @@ ggplot(vtClusters %>% filter(cluster == 321785 | 422907), aes(x=date, fill=clust
 
 ```
 
-## Barplot
+## Barplot (fitz, how different form histograms)
 
 
 other stuff to include:
@@ -95,7 +95,7 @@ how scale changes what visualizations show/mean
 
 changing axes 
 
-aesthetics: changing labels, sizes, etc. 
+aesthetics: changing labels, sizes, etc. (fitz)
 
 
 # Exercises
