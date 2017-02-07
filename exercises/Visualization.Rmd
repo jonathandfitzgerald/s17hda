@@ -37,6 +37,7 @@ Today we will work mostly with `ggplot2`—included in the `tidyverse`—which i
 5. Set your facets
 6. Other things
 
+## Scatterplot
 
 ```{r}
 
@@ -87,9 +88,6 @@ ggplot(vtClusters %>% filter(cluster == 321785 | 422907), aes(x=date, fill=clust
 
 ## Barplot
 
-## Scatterplots
-
-## 
 
 other stuff to include:
 
