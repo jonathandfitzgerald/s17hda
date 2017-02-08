@@ -25,6 +25,15 @@ census <- read_csv(file = "./data/1840-census-data.csv") %>%
   separate(county, into = c("county", "state"), sep = "\\, ")
 ```
 
+Most of what we didn't get to last week—Fitz's exercises on text analysis—we are putting off for a few weeks. There's one important bit I didn't get to share, however, which is how to export the results of your transformations. As with importing data, there are many possibilities, but to export a CSV, you use the function `write.csv`, which is followed by at least two arguments: the data you wish to export and the destination of the file. I would recommend creating an `output` folder in your working directory for such files, so they don't get confused with your source data. To export that network data from last week, for instance, we could run the following (assuming that dataframe is still in your global enviornments). 
+
+```{r}
+
+write.csv(vtEdges, file="./output/vtEdges.csv")
+
+```
+
+Okay, on to visualization! 
 
 ## The philosophy of `ggplot`
 
@@ -36,6 +45,8 @@ Today we will work mostly with `ggplot2`—included in the `tidyverse`—which i
 4. Set your scales
 5. Set your facets
 6. Other things
+
+We can't possibly survey every type of visualization you can create in R or all the nuances of refining those visualizations. Today we will introduce a few possibilities, and you should expect to see plenty of examples of such charts and visualization—including variations and nuances on them—as we move forward this semester.
 
 ## Histograms
 
@@ -105,7 +116,7 @@ ggplot(vtClusters, aes(date, fill = cluster)) + geom_histogram(binwidth=365)
 ```
 
 
-Perhaps that's too many to really compare meaningfully. Does it work better with two?
+Perhaps that's too many to really compare meaningfully. Does it work better with two? Which two? Again, how does adjusting the bins change things?
 
 ```{r}
 
@@ -113,10 +124,10 @@ ggplot(vtClusters %>% filter(cluster == 321785 | cluster == 355594), aes(date, f
 
 ```
 
+## Barplot (fitz, how different form histograms)
 
 
 ## Scatterplot
-
 
 ```{r}
 
@@ -131,7 +142,6 @@ ggplot(census) +
   geom_smooth(mapping = aes(x = Periodicals, y = LiterateWhiteAge20andOver))
 ```
 
-## Barplot (fitz, how different form histograms)
 
 
 other stuff to include:
