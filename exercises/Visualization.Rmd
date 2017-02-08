@@ -20,7 +20,7 @@ Okay, let's load some data. I figured out why our tibbles weren't loading correc
 
 ```{r}
 census <- read_csv(file = "./data/1840-census-data.csv") %>%
-  select(1,90:107) %>%
+  # select(1,90:107) %>%
   rename(county = QualifyingAreaName) %>%
   separate(county, into = c("county", "state"), sep = "\\, ")
 ```
@@ -151,6 +151,8 @@ how scale changes what visualizations show/mean
 changing axes 
 
 aesthetics: changing labels, sizes, etc. (fitz)
+
+facets/small multiples?
 
 
 # Exercises
