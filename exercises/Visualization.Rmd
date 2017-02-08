@@ -37,7 +37,86 @@ Today we will work mostly with `ggplot2`—included in the `tidyverse`—which i
 5. Set your facets
 6. Other things
 
+## Histograms
+
+Perhaps the most basic—though extrememly useful!—type of chart is the histogram, which shows the frequency of a single variable at different intervals. Those intervals could be temporal or based on another continuous scale in your data (e.g. age, height, length). Histograms resemble bar charts, which we will discuss next, but the histogram represents "continuous data" while the bar chart represents distinct categories. This should be more clear through example.  
+
+To start, I'll show you a feature of our Viral Texts data that histograms helped me understand better than I did before plotting it. We'll load the same clusters we started to use last week. Note that we're using `read_csv` to import directly into a tibble. To see one difference, check the class of the `text` column after importing the Viral Texts data below.
+
+```{r}
+
+vtClusters <- read_csv(file="./data/VT-vignettes.csv") %>% 
+  mutate(title = gsub('(.*)\\.*\\(.*','\\1',title)) %>%
+  mutate(date = as.Date(date, "%Y-%m-%d"))
+
+```
+
+In the code below, we invoke `ggplot` and then add a histogram `layer` to it. We identify `date` as the continuous variable for the x axis of the plot.
+
+```{r}
+
+ggplot(vtClusters %>% filter(cluster == 321785)) + geom_histogram(aes(x=date))
+
+```
+
+The primary element we control when creating histograms is the size of the bins the data should be sorted into: these "bins" can be thought of as the intervals of the chart, and the bins you choose can have a dramatic effect both on what the charts look like *and* what they say about your data. For any given histogram, you should not be content with the default bin size but instead experiement with different possibilities. When your x axis is dates, the bins refer to numbers of days, meaning this revision of our histogram uses bins of 1 year:
+
+```{r}
+
+ggplot(vtClusters %>% filter(cluster == 321785)) + geom_histogram(aes(x=date), binwidth=365)
+
+```
+
+That looks quite a lot like our original plot, but what happens if you change the bidwidth to one month? Three years? Experiment a bit below.
+
+```{r}
+
+
+
+```
+
+Note that some elements in the grammar of `ggplot` can be placed at different spots in the code, as below where we define the x axis as an argument in the `ggplot` function rather than in the `geom_histogram` function. This can be important to consider as you build more complicated visualizations, as the precise order can change the outcome. Think of these as layers you're adding to the larger chart, and consider what layers need to be applied at the base and which are applied overtop. 
+
+```{r}
+
+ggplot(vtClusters %>% filter(cluster == 321785), aes(date)) + geom_histogram(binwidth=365)
+
+```
+
+### Histograms for Exploratory Analysis
+
+For me beginning to plot clusters as histograms clued me to the cycles of attention that particular "viral" stories enjoyed during their lives in nineteenth-century newspapers. I had seen this or that text being reprinted, disappearing for awhile, and then being reprinted again, but I had not considered that such waxing and waning might be a more widespread pattern: a feature of newspaper reprinting that could be modeled more generally. 
+
+Test out the few other clusters in our sample data. Do their histograms bear out such a cicular model of nineteenth-century reprinting or not? Is 365 the best bin width for visualizing all of the clusters in this dataset? Why or why not? Hint: the function `unique` can identify all the distinct values in a particular column.
+
+```{r}
+
+ggplot(vtClusters %>% filter(cluster == 321785)) + geom_histogram(aes(x=date), binwidth=365)
+
+```
+
+Thus far we've been using `filter` from dplyr to look at one cluster at a time, but we could also create a histogram that layers multiple clusters over each other. The code below doesn't quite work for that purpose. Any theories as to why not?
+
+```{r}
+
+ggplot(vtClusters, aes(date, fill = cluster)) + geom_histogram(binwidth=365)
+
+
+```
+
+
+Perhaps that's too many to really compare meaningfully. Does it work better with two?
+
+```{r}
+
+ggplot(vtClusters %>% filter(cluster == 321785 | cluster == 355594), aes(date, fill = as.character(cluster))) + geom_histogram(binwidth=365)
+
+```
+
+
+
 ## Scatterplot
+
 
 ```{r}
 
@@ -50,40 +129,6 @@ ggplot(census) +
 ggplot(census) + 
   geom_point(mapping = aes(x = Periodicals, y = LiterateWhiteAge20andOver)) +
   geom_smooth(mapping = aes(x = Periodicals, y = LiterateWhiteAge20andOver))
-```
-
-## Histograms
-
-Not that we're using `read_csv` to import directly into a tibble. To see one difference, check the class of the `text` column after importing the Viral Texts data below.
-
-```{r}
-
-vtClusters <- read_csv(file="./data/VT-vignettes.csv") %>% 
-  mutate(title = gsub('(.*)\\.*\\(.*','\\1',title)) %>%
-  mutate(date = as.Date(date, "%Y-%m-%d"))
-
-```
-
-
-```{r}
-
-ggplot(vtClusters %>% filter(cluster == 321785)) + geom_histogram(aes(x=date, binwidth=365))
-
-```
-
-```{r}
-
-ggplot(vtClusters %>% filter(cluster == 355594)) + geom_histogram(aes(x=date))
-
-```
-
-
-```{r}
-
-ggplot(vtClusters %>% filter(cluster == 321785 | cluster == 422907), aes(x=date, fill=cluster)) + geom_histogram(binwidth=365)
-
-ggplot(vtClusters %>% filter(cluster == 321785 | 422907), aes(x=date, fill=cluster)) + geom_freqpoly(binwidth=365, position = "stack")
-
 ```
 
 ## Barplot (fitz, how different form histograms)
