@@ -143,7 +143,15 @@ ggplot(vtClusters %>% filter(cluster == 321785)) + geom_bar(aes(x=date), binwidt
 
 After you run the above code, you'll notice a warning message: "`geom_bar()` no longer has a `binwidth` parameter. Please use `geom_histogram()` instead." In an effort to better differentiate bar plots from histograms, the makers of `ggplot2` removed the `binwidth` parameter, though, as you see, it still works.
 
-Where bar plots are different, then, is you can make the x-axis contains all the information by just setting it to an empty string and filling the bars based on a variable (in this case, the cluster id). The bars will appear stacked on top of each other.
+Where bar plots are different, then, is that they can display non-continuous data, whereas histograms only show any value over a continuous range (such as time). When graphing non-continuous data (sometimes called "discrete" data), the bars can represent actual values of observations. Look, for example, at the result of the code below. It's quite difficult to read, but rather than grouping observations into bins, as the histogram does, what you're seeing is one bar for every instance of the cluster in time.
+
+```{r}
+
+ggplot(vtClusters %>% filter(cluster == 321785)) + geom_bar(aes(x=date))
+
+```
+
+If we simply want a count of all observations, we can make the x-axis contains all the information by just setting it to an empty string and filling the bars based on a variable (in this case, the cluster id). The bars will appear stacked on top of each other.
 
 ```{r}
 
@@ -158,7 +166,6 @@ Try changing the `fill` to some other variable:
 
 
 ```
-
 
 I find thes kinds of bar plots particularly unhelpful, however, because you have to compare the size of the chunks to each other. It's a bit more readable if we set the parameter `position="dodge"`. 
 
@@ -178,7 +185,7 @@ ggplot(vtClusters) + geom_bar(aes(x="",fill=as.character(cluster))) + coord_pola
 
 Oh no! You just created a pie chart! The most reviled of all visualizations! Here, `ggplot2` is describing them  as "a stacked bar chart plotted in a polar coordinate system." 
 
-Where bar plots are most useful over histograms, then, is in the fact you can set the y-axis to display information beyond just a count. Below, we use the "size" variable to tell us how many witnesses of each cluster appear. Of course this will be the same as the count, but imagine a scenario in which we only had one representative witness of each cluster and we wanted to see the size of the clusters. In order to make this imagined scenario a reality, we need to do bit of transformation on the dataframe. Can you tell what we're doing here before we ge to the plot?
+Where bar plots are most useful over histograms, then, is in the fact you can set the y-axis to display information beyond just a count or other kinds of continuous data. Below, we use the "size" variable to tell us how many witnesses of each cluster appear. Of course this will be the same as the count, but imagine a scenario in which we only had one representative witness of each cluster and we wanted to see the size of the clusters. In order to make this imagined scenario a reality, we need to do bit of transformation on the dataframe. Can you tell what we're doing here before we ge to the plot?
 
 ```{r}
 
@@ -198,7 +205,7 @@ vtClusters %>% group_by(cluster) %>% slice(1) %>% ggplot() + geom_bar(stat = "id
 
 That's better.
 
-The Viral Text corpus we've provided doesn't include a lot of numerical data (which is, after all, what bar plots are good for) so let's go back to the census data for one more example of what we can do with the y-axis as a variable.
+The Viral Text corpus we've provided doesn't include a lot of numerical data (which is, after all, what bar plots are good for) so let's go back to the census data for one more example of what we can do with the y-axis as a variable. Here is the number of newspapers per state:
 
 ```{r}
 
@@ -241,6 +248,84 @@ ggplot(census) +
   geom_smooth(mapping = aes(x = Periodicals, y = LiterateWhiteAge20andOver))
 ```
 
+##Aesthetics
+
+By now you've seen that ggplot does an _okay_ job of trying to provide meaningful (and visually attractive) non-data elements to your plots, but if we dig in a bit we actually can gain quite a bit of control over the display. Let's look at a few of these options:
+
+We've already used some of the aesthetics available in ggplot when we set the `fill` argument, for example, or utilized `coord_flip()`. But what about if you want to give your chart a title? Let's work with the New England newspapers visualization we created earlier:
+
+```{r}
+
+census %>% 
+  group_by(state) %>% 
+  filter(state %in% ne) %>% 
+  ggplot() + 
+  geom_bar(stat = "identity", aes(x=state, y=Newspapers, fill=state)) + 
+  coord_flip() +  
+  ggtitle("Number of Newspapers in the New England States, 1840")
+
+```
+
+Pretty, right? But notice that "state" on the x-axis is lower-case. This is because it's just taking as its title the name of the variable. Let's fix that using the `labs` argument:
+
+```{r}
+
+census %>% 
+  group_by(state) %>% 
+  filter(state %in% ne) %>% 
+  ggplot() + 
+  geom_bar(stat = "identity", aes(x=state, y=Newspapers, fill=state)) + 
+  coord_flip() +  
+  ggtitle("Number of Newspapers in the New England States, 1840") +
+  labs(x="State",y="Number of Newspapers",fill="State") 
+
+```
+
+You'll notice above that while I was setting the `labs` argument, I went ahead and changed the label of the y-axis and the fill key as well.
+
+We can take this one step further by using ggplot's `theme()` argument. 
+
+```{r}
+
+census %>% 
+  group_by(state) %>% 
+  filter(state %in% ne) %>% 
+  ggplot() + 
+  geom_bar(stat = "identity", aes(x=state, y=Newspapers, fill=state)) + 
+  coord_flip() +  
+  ggtitle("Number of Newspapers in the New England States, 1840") +
+  labs(x="State",y="Number of Newspapers",fill="State") + 
+  theme(plot.title = element_text(family = "Trebuchet MS", color="#666666", face="bold", size=22, hjust=0)) +
+  theme(axis.title = element_text(family = "Trebuchet MS", color="#666666", face="bold", size=14)) + 
+  theme(legend.title = element_text(family = "Trebuchet MS", color="#666666", face="bold", size=14)) 
+
+```
+
+If you dig into the `theme()` arguments (the easiest way to do this is to type `theme(` and then hit `tab` to scroll through the available options), you'll see that you can customize almost anything about your chart. Just for fun:
+
+```{r}
+
+census %>% 
+  group_by(state) %>% 
+  filter(state %in% ne) %>% 
+  ggplot() + 
+  geom_bar(stat = "identity", aes(x=state, y=Newspapers, fill=state)) + 
+  coord_flip() +  
+  ggtitle("Number of Newspapers in the New England States, 1840") +
+  labs(x="State",y="Number of Newspapers",fill="State",caption="Here is a visualization showing the number of newspapers per New England state from census data taken in the year 1840.") + 
+  theme(plot.title = element_text(family = "Trebuchet MS", color="#666666", face="bold", size=22, hjust=0)) +
+  theme(axis.title = element_text(family = "Trebuchet MS", color="#666666", face="bold", size=16)) + 
+  theme(legend.title = element_text(family = "Trebuchet MS", color="#666666", face="bold", size=16)) +
+  theme(legend.background = element_rect(color = "#efefef")) +
+  theme(plot.caption = element_text(family = "Trebuchet MS", color="#666666", size=10, hjust = 0.5, margin = margin(15, 0, 15, 0))) +
+  theme(axis.text = element_text(family = "Trebuchet MS", color="#aaaaaa", face="bold", size=10)) +
+  theme(panel.background = element_rect(fill = "white")) +
+  theme(panel.grid.major = element_line(color = "#efefef")) +
+  theme(axis.ticks = element_line(color = "#efefef"))
+
+```
+
+That's lovely. For a full list of all the `theme()` options, look [here](http://docs.ggplot2.org/0.9.2.1/theme.html).
 
 
 other stuff to include:
