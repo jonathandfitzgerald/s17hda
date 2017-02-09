@@ -112,7 +112,6 @@ Thus far we've been using `filter` from dplyr to look at one cluster at a time, 
 
 ggplot(vtClusters, aes(date, fill = cluster)) + geom_histogram(binwidth=365)
 
-
 ```
 
 
@@ -124,7 +123,15 @@ ggplot(vtClusters %>% filter(cluster == 321785 | cluster == 355594), aes(date, f
 
 ```
 
-## Barplot (fitz, how different form histograms)
+What do you think the histogram below illustrates?
+
+```{r}
+
+ggplot(vtClusters %>% filter(cluster == 321785 | cluster == 355594), aes(end-begin, fill = as.character(cluster))) + geom_histogram(binwidth=1000)
+
+```
+
+## Barplot (fitz, how different from histograms)
 
 As we've seen, a histogram looks like a barplot, so what's the difference? Well, at first, not much at all. If we use the code from above but replace `geom_histogram` with `geom_bar`, we'll get a chart that looks the same:
 
@@ -249,11 +256,7 @@ facets/small multiples?
 
 # Exercises
 
-I am making some changes down here at the bottom just to see what happens. Here is a code block:
+1. Read in the `crewlists.csv` file we used a few weeks back. What would be a good variable to create a histogram from? What about a bargraph? One of each for different variables. Experiment with the settings of each until you have visualizations you'd be happy to share in class next week (and be ready to talk about what you think each illustrates). 
 
-```{r}
-
-print("Hello world.")
-
-```
+2. 
 
