@@ -46,7 +46,7 @@ Today we will work mostly with `ggplot2`—included in the `tidyverse`—which i
 5. Set your facets
 6. Other things
 
-We can't possibly survey every type of visualization you can create in R or all the nuances of refining those visualizations. Today we will introduce a few possibilities, and you should expect to see plenty of examples of such charts and visualization—including variations and nuances on them—as we move forward this semester.
+We can't possibly survey every type of visualization you can create in R or all the nuances of refining those visualizations. Today we will introduce a few possibilities, and you should expect to see plenty of examples of such charts and visualizations—including variations and nuances on them—as we move forward this semester.
 
 ## Histograms
 
@@ -70,7 +70,7 @@ ggplot(vtClusters %>% filter(cluster == 321785)) + geom_histogram(aes(x=date))
 
 ```
 
-The primary element we control when creating histograms is the size of the bins the data should be sorted into: these "bins" can be thought of as the intervals of the chart, and the bins you choose can have a dramatic effect both on what the charts look like *and* what they say about your data. For any given histogram, you should not be content with the default bin size but instead experiement with different possibilities. When your x axis is dates, the bins refer to numbers of days, meaning this revision of our histogram uses bins of 1 year:
+The primary element we control when creating histograms is the size of the bins the data should be sorted into: these "bins" can be thought of as the intervals of the chart, and the bins you choose can have a dramatic effect both on what the charts look like *and* what they say about your data. For any given histogram, you should not be content with the default bin size but instead experiment with different possibilities. When your x axis is dates, the bins refer to numbers of days, meaning this revision of our histogram uses bins of 1 year:
 
 ```{r}
 
@@ -126,6 +126,98 @@ ggplot(vtClusters %>% filter(cluster == 321785 | cluster == 355594), aes(date, f
 
 ## Barplot (fitz, how different form histograms)
 
+As we've seen, a histogram looks like a barplot, so what's the difference? Well, at first, not much at all. If we use the code from above but replace `geom_histogram` with `geom_bar`, we'll get a chart that looks the same:
+
+```{r}
+
+ggplot(vtClusters %>% filter(cluster == 321785)) + geom_bar(aes(x=date), binwidth=365)
+
+```
+
+After you run the above code, you'll notice a warning message: "`geom_bar()` no longer has a `binwidth` parameter. Please use `geom_histogram()` instead." In an effort to better differentiate bar plots from histograms, the makers of `ggplot2` removed the `binwidth` parameter, though, as you see, it still works.
+
+Where bar plots are different, then, is you can make the x-axis contains all the information by just setting it to an empty string and filling the bars based on a variable (in this case, the cluster id). The bars will appear stacked on top of each other.
+
+```{r}
+
+ggplot(vtClusters) + geom_bar(aes(x="",fill=as.character(cluster)))
+
+```
+
+Try changing the `fill` to some other variable:
+
+```{r}
+
+
+
+```
+
+
+I find thes kinds of bar plots particularly unhelpful, however, because you have to compare the size of the chunks to each other. It's a bit more readable if we set the parameter `position="dodge"`. 
+
+```{r}
+
+ggplot(vtClusters) + geom_bar(aes(x="",fill=as.character(cluster)), position = "dodge")
+
+```
+
+Or, if we set the y-axis to a polar coordinate, as below:
+
+```{r}
+
+ggplot(vtClusters) + geom_bar(aes(x="",fill=as.character(cluster))) + coord_polar("y")
+
+```
+
+Oh no! You just created a pie chart! The most reviled of all visualizations! Here, `ggplot2` is describing them  as "a stacked bar chart plotted in a polar coordinate system." 
+
+Where bar plots are most useful over histograms, then, is in the fact you can set the y-axis to display information beyond just a count. Below, we use the "size" variable to tell us how many witnesses of each cluster appear. Of course this will be the same as the count, but imagine a scenario in which we only had one representative witness of each cluster and we wanted to see the size of the clusters. In order to make this imagined scenario a reality, we need to do bit of transformation on the dataframe. Can you tell what we're doing here before we ge to the plot?
+
+```{r}
+
+vtClusters %>% group_by(cluster) %>% slice(1) %>% ggplot() + geom_bar(stat = "identity", aes(x=as.character(cluster), y=size, fill=as.character(cluster)))
+
+```
+
+This also brings to the fore a concrete instance of what we were describing below when we noted that the order of things is less important. That is, we can prepare our data before piping it into  `ggplot()`. Note, as well, that in order to get ggplot to display data in the y-axis, as opposed to a count, we need to specify `stat = "identity"` as opposed to the default (and thus not specified), `stat = "count"`.
+
+The visualization we just created is a bit hard to read since the clusters get jammed together on the x-axis, so we can use another transformation called `coord_flip()` Try it out:
+
+```{r}
+
+vtClusters %>% group_by(cluster) %>% slice(1) %>% ggplot() + geom_bar(stat = "identity", aes(x=as.character(cluster), y=size, fill=as.character(cluster))) + coord_flip()
+
+```
+
+That's better.
+
+The Viral Text corpus we've provided doesn't include a lot of numerical data (which is, after all, what bar plots are good for) so let's go back to the census data for one more example of what we can do with the y-axis as a variable.
+
+```{r}
+
+census %>% group_by(state) %>% ggplot() + geom_bar(stat = "identity", aes(x=state, y=Newspapers, fill=state))
+
+```
+
+That's a lot of states; Let's flip it:
+
+```{r}
+
+census %>% group_by(state) %>% ggplot() + geom_bar(stat = "identity", aes(x=state, y=Newspapers, fill=state)) + coord_flip()
+
+```
+
+That's better, but let's filter it down to just New England states:
+
+```{r}
+
+ne <- c("Maine", "New Hampshire", "Vermont", "Massachusetts", "Connecticut")
+
+census %>% group_by(state) %>% filter(state %in% ne) %>% ggplot() + geom_bar(stat = "identity", aes(x=state, y=Newspapers, fill=state)) + coord_flip()
+
+```
+
+We're using a bit of a tricky filtering method here. Can anybody figure out what's going on?
 
 ## Scatterplot
 
@@ -148,7 +240,7 @@ other stuff to include:
 
 how scale changes what visualizations show/mean
 
-changing axes 
+changing axes (I (Fitz) covered this a bit in bar plots)
 
 aesthetics: changing labels, sizes, etc. (fitz)
 
