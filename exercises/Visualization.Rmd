@@ -131,7 +131,7 @@ ggplot(vtClusters %>% filter(cluster == 321785 | cluster == 355594), aes(end-beg
 
 ```
 
-## Barplot (fitz, how different from histograms)
+## Barplots
 
 As we've seen, a histogram looks like a barplot, so what's the difference? Well, at first, not much at all. If we use the code from above but replace `geom_histogram` with `geom_bar`, we'll get a chart that looks the same:
 
