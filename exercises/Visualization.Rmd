@@ -159,7 +159,7 @@ ggplot(vtClusters %>% filter(cluster == 321785)) + geom_bar(aes(x=date))
 
 ```
 
-If we simply want a count of all observations, we can make the x-axis contain all the information by just setting it to an empty string and filling the bars based on a variable (in this case, the cluster id). The bars will appear stacked on top of each other.
+If we simply want a count of all observations, we can make the x-axis contain all the information by setting it to an empty string and filling the bars based on a variable (in this case, the cluster id). The bars will appear stacked on top of each other.
 
 ```{r}
 
@@ -201,7 +201,7 @@ vtClusters %>% group_by(cluster) %>% slice(1) %>% ggplot() + geom_bar(stat = "id
 
 ```
 
-This also brings to the fore a concrete instance of what we were describing below when we noted that the order of things is less important. That is, we can prepare our data before piping it into  `ggplot()`. Note, as well, that in order to get ggplot to display data in the y-axis, as opposed to a count, we need to specify `stat = "identity"` as opposed to the default (and thus not specified), `stat = "count"`.
+This also brings to the fore a concrete instance of what we were describing below when we noted that the order of things is less important. That is, we can prepare our data before piping it into `ggplot()`. Note, as well, that in order to get ggplot to display data in the y-axis, as opposed to a count, we need to specify `stat = "identity"` as opposed to the default (and thus not specified), `stat = "count"`.
 
 The visualization we just created is a bit hard to read since the clusters get jammed together on the x-axis, so we can use another transformation called `coord_flip()` Try it out:
 
@@ -243,17 +243,36 @@ We're using a bit of a tricky filtering method here. Can anybody figure out what
 
 ## Scatterplot
 
+Histograms and barcharts can be useful for exploring single-variables in your data, scatterplots are a standard visualization for exploring correlations between variables. For instance, we can see whether the number of newspapers per county counted in the 1840 census correlated to the number of literate people in those counties:
+
 ```{r}
 
 ggplot(census) +
-  geom_point(mapping = aes(x = Periodicals, y = LiterateWhiteAge20andOver))
+  geom_point(mapping = aes(x = Newspapers, y = LiterateWhiteAge20andOver))
 
 ```
 
+`ggplot` also lets use overlay different kinds of plots. Can you tell what's happening below?
+
 ```{r}
 ggplot(census) + 
-  geom_point(mapping = aes(x = Periodicals, y = LiterateWhiteAge20andOver)) +
-  geom_smooth(mapping = aes(x = Periodicals, y = LiterateWhiteAge20andOver))
+  geom_point(mapping = aes(x = Newspapers, y = LiterateWhiteAge20andOver)) +
+  geom_smooth(mapping = aes(x = Newspapers, y = LiterateWhiteAge20andOver))
+```
+
+Remember that we can facet our graphs by particular variables. What's happening below?
+
+```{r}
+ggplot(census %>% filter(state %in% ne)) + 
+  geom_point(mapping = aes(x = Newspapers, y = PrintingOffices)) +
+  facet_grid(. ~ state)
+```
+
+Experiment a bit: can you find two variables in the census data with a potentially interesting (positive or negative) correlation?
+
+```{r}
+
+
 ```
 
 ##Aesthetics
@@ -340,12 +359,6 @@ other stuff to include:
 
 how scale changes what visualizations show/mean
 
-changing axes (I (Fitz) covered this a bit in bar plots)
-
-aesthetics: changing labels, sizes, etc. (fitz)
-
-facets/small multiples?
-
 
 # Exercises
 
@@ -378,10 +391,9 @@ vtClusters %>%
   ggplot() +
   geom_bar(stat = "identity", aes(x=reorder(as.character(cluster), -count), y=count, fill=as.character(cluster))) 
 
-
 ```
 
-4. Similar to above, visualize the length of the 10 longest texts in each cluster. Each cluster should appear in its own graph (hint: use `facet_wrap()`).
+4. Similar to above, visualize the length of the 10 longest texts in each cluster. Each cluster should appear in its own graph (hint: use `facet_grid()` or `facet_wrap()`).
 
 ```{r}
 
