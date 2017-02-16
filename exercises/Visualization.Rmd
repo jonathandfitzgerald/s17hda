@@ -1,7 +1,7 @@
 ---
 title: "Visualization"
-author: "Ryan Cordell and Jonathan Fitzgerald"
-date: "2/15/2017"
+author: "Ryan Cordell"
+date: "2/6/2017"
 output: html_document
 ---
 
@@ -349,7 +349,7 @@ facets/small multiples?
 
 # Exercises
 
-1. Read in the `crewlists.csv` file we used a few weeks back. What would be a good variable to create a histogram from? What about a bargraph? Create one of each for different variables. Experiment with the settings of each until you have visualizations you'd be happy to share in class next week (and be ready to talk about what you think each illustrates). 
+1. Read in the `crewlists.csv` file we used a few weeks back. What would be a good variable to create a histogram from? What about a bargraph? One of each for different variables. Experiment with the settings of each until you have visualizations you'd be happy to share in class next week (and be ready to talk about what you think each illustrates). 
 
 ```{r}
 
@@ -381,24 +381,19 @@ vtClusters %>%
 
 ```
 
+4. Similar to above, visualize the length of the 10 longest texts in each cluster. Each cluster should appear in its own graph (hint: use `facet_wrap()`).
 
 ```{r}
 
 vtClusters %>% 
-  group_by(cluster) %>% 
-  mutate(count = nchar(text)) %>%
-  arrange(-count) %>%
-  slice(10) %>%
-  ungroup %>%
-  ggplot() +
-  geom_bar(stat = "identity", aes(x=reorder(X1, -count), y=count, fill=as.character(cluster))) +
-  facet_wrap(facets = "cluster")
-
-test = vtClusters %>% 
   mutate(count = nchar(text)) %>%
   arrange(cluster, -count) %>%
-  group_by(cluster,count) %>%
-  slice(10)
+  group_by(cluster) %>%
+  slice(c(1:10)) %>%
+  ggplot() +
+  geom_bar(stat = "identity", aes(x=reorder(X1, count), y=count, fill=as.character(cluster))) +
+  coord_flip() +
+  facet_wrap(facets = "cluster", scales = "free_y")
 
 
 ```
