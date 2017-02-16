@@ -354,11 +354,6 @@ census %>%
 That's lovely. For a full list of all the `theme()` options, look [here](http://docs.ggplot2.org/0.9.2.1/theme.html).
 
 
-other stuff to include:
-
-how scale changes what visualizations show/mean
-
-
 # Exercises
 
 1. Read in the `crewlists.csv` file we used a few weeks back. What would be a good variable to create a histogram from? What about a bargraph? One of each for different variables. Experiment with the settings of each until you have visualizations you'd be happy to share in class next week (and be ready to talk about what you think each illustrates). 
@@ -373,8 +368,6 @@ how scale changes what visualizations show/mean
 ```{r}
 
 
-vtClusters %>% group_by(corpus) %>% count() %>% ggplot() + geom_bar(stat = "identity", aes(x=corpus, y=n, fill=corpus))
-
 
 ```
 
@@ -382,13 +375,6 @@ vtClusters %>% group_by(corpus) %>% count() %>% ggplot() + geom_bar(stat = "iden
 
 ```{r}
 
-vtClusters %>% 
-  group_by(cluster) %>% 
-  mutate(count = nchar(text)) %>%
-  arrange(-count) %>%
-  slice(1) %>%
-  ggplot() +
-  geom_bar(stat = "identity", aes(x=reorder(as.character(cluster), -count), y=count, fill=as.character(cluster))) 
 
 ```
 
@@ -396,17 +382,19 @@ vtClusters %>%
 
 ```{r}
 
-vtClusters %>% 
-  mutate(count = nchar(text)) %>%
-  arrange(cluster, -count) %>%
-  group_by(cluster) %>%
-  slice(c(1:10)) %>%
-  ggplot() +
-  geom_bar(stat = "identity", aes(x=reorder(X1, count), y=count, fill=as.character(cluster))) +
-  coord_flip() +
-  facet_wrap(facets = "cluster", scales = "free_y")
 
 
 ```
 
-5. Reach goal: 
+5. Reach goal: Just as important as being able to create visualizations is the ability to read and evaluate them. To that end, check out the following visualization. It's not good. Your job is to tell us why, and then, to make it better.
+
+```{r}
+
+census %>% 
+  group_by(state) %>%
+  mutate(free_count = sum(FreePersons)) %>%
+  ggplot() +
+  geom_bar(stat = "identity", aes(x=state, y=free_count)) + coord_flip() +
+  labs(x="State",y="Number of Free Persons per State",fill="State")
+
+```
