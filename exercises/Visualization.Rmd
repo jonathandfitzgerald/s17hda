@@ -341,7 +341,7 @@ facets/small multiples?
 
 # Exercises
 
-1. Read in the `crewlists.csv` file we used a few weeks back. What would be a good variable to create a histogram from? What about a bargraph? One of each for different variables. Experiment with the settings of each until you have visualizations you'd be happy to share in class next week (and be ready to talk about what you think each illustrates). 
+1. Read in the `crewlists.csv` file we used a few weeks back. What would be a good variable to create a histogram from? What about a bargraph? Create one of each for different variables. Experiment with the settings of each until you have visualizations you'd be happy to share in class next week (and be ready to talk about what you think each illustrates). 
 
 2. 
 
