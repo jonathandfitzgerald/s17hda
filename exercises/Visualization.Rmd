@@ -8,7 +8,7 @@ output: html_document
 Load 'em up:
 
 ```{r}
-library(ggplot2)
+library(tidyverse)
 library(tibble)
 ```
 
@@ -123,11 +123,19 @@ ggplot(vtClusters %>% filter(cluster == 321785 | cluster == 355594), aes(date, f
 
 ```
 
-What do you think the histogram below illustrates?
+There's another modification we can use with various ggplots that might make comparisons easier. `facet.grid` allows you to dynamically separate plots by a particular variable and set them side by side:
 
 ```{r}
 
-ggplot(vtClusters %>% filter(cluster == 321785 | cluster == 355594), aes(end-begin, fill = as.character(cluster))) + geom_histogram(binwidth=1000)
+ggplot(vtClusters %>% filter(cluster == 321785 | cluster == 355594), aes(date, fill = as.character(cluster))) + geom_histogram(binwidth=365) + facet_grid(. ~ cluster)
+
+```
+
+or top to bottom:
+
+```{r}
+
+ggplot(vtClusters %>% filter(cluster == 321785 | cluster == 355594), aes(date, fill = as.character(cluster))) + geom_histogram(binwidth=365) + facet_grid(cluster ~ .)
 
 ```
 
