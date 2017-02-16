@@ -20,7 +20,6 @@ Okay, let's load some data. I figured out why our tibbles weren't loading correc
 
 ```{r}
 census <- read_csv(file = "./data/1840-census-data.csv") %>%
-  # select(1,90:107) %>%
   rename(county = QualifyingAreaName) %>%
   separate(county, into = c("county", "state"), sep = "\\, ")
 ```
@@ -252,19 +251,19 @@ ggplot(census) +
 
 ```
 
-`ggplot` also lets use overlay different kinds of plots. Can you tell what's happening below?
+`ggplot` also lets use overlay different kinds of plots. Can you tell what's happening below? Specifically, do you have any idea what `position = "jitter"` might be doing?
 
 ```{r}
 ggplot(census) + 
-  geom_point(mapping = aes(x = Newspapers, y = LiterateWhiteAge20andOver)) +
+  geom_point(mapping = aes(x = Newspapers, y = LiterateWhiteAge20andOver), position = "jitter") +
   geom_smooth(mapping = aes(x = Newspapers, y = LiterateWhiteAge20andOver))
 ```
 
-Remember that we can facet our graphs by particular variables. What's happening below?
+Remember that we can facet our graphs by particular variables:
 
 ```{r}
 ggplot(census %>% filter(state %in% ne)) + 
-  geom_point(mapping = aes(x = Newspapers, y = PrintingOffices)) +
+  geom_point(mapping = aes(x = Newspapers, y = PrintingOffices, size = TotalPopulation), position = "jitter") +
   facet_grid(. ~ state)
 ```
 
@@ -275,7 +274,7 @@ Experiment a bit: can you find two variables in the census data with a potential
 
 ```
 
-##Aesthetics
+## Aesthetics
 
 By now you've seen that ggplot does an _okay_ job of trying to provide meaningful (and visually attractive) non-data elements to your plots, but if we dig in a bit we actually can gain quite a bit of control over the display. Let's look at a few of these options:
 
@@ -409,3 +408,5 @@ vtClusters %>%
 
 
 ```
+
+5. Reach goal: 
