@@ -78,7 +78,7 @@ ggplot(vtClusters %>% filter(cluster == 321785)) + geom_histogram(aes(x=date), b
 
 ```
 
-That looks quite a lot like our original plot, but what happens if you change the bidwidth to one month? Three years? Experiment a bit below.
+That looks quite a lot like our original plot, but what happens if you change the binwidth to one month? Three years? Experiment a bit below.
 
 ```{r}
 
@@ -151,7 +151,7 @@ ggplot(vtClusters %>% filter(cluster == 321785)) + geom_bar(aes(x=date))
 
 ```
 
-If we simply want a count of all observations, we can make the x-axis contains all the information by just setting it to an empty string and filling the bars based on a variable (in this case, the cluster id). The bars will appear stacked on top of each other.
+If we simply want a count of all observations, we can make the x-axis contain all the information by just setting it to an empty string and filling the bars based on a variable (in this case, the cluster id). The bars will appear stacked on top of each other.
 
 ```{r}
 
@@ -301,7 +301,7 @@ census %>%
 
 ```
 
-If you dig into the `theme()` arguments (the easiest way to do this is to type `theme(` and then hit `tab` to scroll through the available options), you'll see that you can customize almost anything about your chart. Just for fun:
+Here we set the font, font size and weight, and text alignment. If you dig into the `theme()` arguments (the easiest way to do this is to type `theme(` and then hit `tab` to scroll through the available options), you'll see that you can customize almost anything about your chart. Just for fun:
 
 ```{r}
 
@@ -313,7 +313,7 @@ census %>%
   coord_flip() +  
   ggtitle("Number of Newspapers in the New England States, 1840") +
   labs(x="State",y="Number of Newspapers",fill="State",caption="Here is a visualization showing the number of newspapers per New England state from census data taken in the year 1840.") + 
-  theme(plot.title = element_text(family = "Trebuchet MS", color="#666666", face="bold", size=22, hjust=0)) +
+  theme(plot.title = element_text(family = "Trebuchet MS", color="#666666", face="bold", size=22, hjust=0.5)) +
   theme(axis.title = element_text(family = "Trebuchet MS", color="#666666", face="bold", size=16)) + 
   theme(legend.title = element_text(family = "Trebuchet MS", color="#666666", face="bold", size=16)) +
   theme(legend.background = element_rect(color = "#efefef")) +
@@ -343,5 +343,54 @@ facets/small multiples?
 
 1. Read in the `crewlists.csv` file we used a few weeks back. What would be a good variable to create a histogram from? What about a bargraph? Create one of each for different variables. Experiment with the settings of each until you have visualizations you'd be happy to share in class next week (and be ready to talk about what you think each illustrates). 
 
-2. 
+```{r}
 
+
+```
+
+2. Using the Viral Texts data, create a barplot showing the number of texts by the corpus they originate from (Bonus points for making the graph look pretty!). Which corpus contributes the most texts? The fewest?
+
+```{r}
+
+
+vtClusters %>% group_by(corpus) %>% count() %>% ggplot() + geom_bar(stat = "identity", aes(x=corpus, y=n, fill=corpus))
+
+
+```
+
+3. Create a barplot visualizing the length of the longest text in each cluster. If possible, arrange the bars in descending order.
+
+```{r}
+
+vtClusters %>% 
+  group_by(cluster) %>% 
+  mutate(count = nchar(text)) %>%
+  arrange(-count) %>%
+  slice(1) %>%
+  ggplot() +
+  geom_bar(stat = "identity", aes(x=reorder(as.character(cluster), -count), y=count, fill=as.character(cluster))) 
+
+
+```
+
+
+```{r}
+
+vtClusters %>% 
+  group_by(cluster) %>% 
+  mutate(count = nchar(text)) %>%
+  arrange(-count) %>%
+  slice(10) %>%
+  ungroup %>%
+  ggplot() +
+  geom_bar(stat = "identity", aes(x=reorder(X1, -count), y=count, fill=as.character(cluster))) +
+  facet_wrap(facets = "cluster")
+
+test = vtClusters %>% 
+  mutate(count = nchar(text)) %>%
+  arrange(cluster, -count) %>%
+  group_by(cluster,count) %>%
+  slice(10)
+
+
+```
