@@ -81,7 +81,7 @@ That looks quite a lot like our original plot, but what happens if you change th
 
 ```{r}
 
-
+ggplot(vtClusters %>% filter(cluster == 321785)) + geom_histogram(aes(x=date), bins=50)
 
 ```
 
@@ -321,7 +321,7 @@ census %>%
   coord_flip() +  
   ggtitle("Number of Newspapers in the New England States, 1840") +
   labs(x="State",y="Number of Newspapers",fill="State") + 
-  theme(plot.title = element_text(family = "Trebuchet MS", color="#666666", face="bold", size=22, hjust=0)) +
+  theme(plot.title = element_text(family = "Trebuchet MS", color="#666666", face="bold", size=22, hjust=.5)) +
   theme(axis.title = element_text(family = "Trebuchet MS", color="#666666", face="bold", size=14)) + 
   theme(legend.title = element_text(family = "Trebuchet MS", color="#666666", face="bold", size=14)) 
 
