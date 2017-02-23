@@ -222,16 +222,17 @@ Now is as good a time as any to talk about code reuse. The above function was or
 Speaking of not reinventing the wheel, you'll notice that the above function outputs the full text of each file, but as above, we probably want to tokenize this to work with words. We can build this feature right into the function with a few small tweaks:
 
 ```{r}
+library(tokenizers)
 
 readWRIGHTwords = function(file) {
   message(file)
   text = paste(scan(file, sep="\n",what="raw",strip.white = TRUE),collapse = "/n")
-  words = text %>% 
-    strsplit("[^A-Za-z]") %>% 
-    unlist 
+  words = text %>% tokenize_words() %>% unlist()
   WRIGHT = tibble(word=words,filename=gsub("data/wright-txt/","",file)) %>% filter(word != "")
   return(WRIGHT)
 }
+
+
 
 ```
 
