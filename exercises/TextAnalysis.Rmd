@@ -219,7 +219,7 @@ Now is as good a time as any to talk about code reuse. The above function was or
 
 ## Modifying the Function to Tokenize.
 
-Speaking of not reinventing the wheel, you'll notice that the above function outputs the full text of each file, but as above, we probably want to tokenize this to work with words. We can build this feature right into the function with a few small tweaks:
+Speaking of not reinventing the wheel, you'll notice that the above function outputs the full text of each file, but as above, we probably want to tokenize this to work with words. We can build this feature right into the function with a few small tweaks. Also worth noting, a couple people in the class reminded me, just this afternoon, that we now have the `tokenizers` package, which makes tokenizing much easier and more efficient than the regex-based method I was using above, so there's that...
 
 ```{r}
 library(tokenizers)
