@@ -355,7 +355,19 @@ Fun stuff.
 
 1. In the `allWRIGHTtext` dataframe, you'll notice that each text contains metadata about the text before the actual text begins. Using `gsub()` and regular expressions, can you remove the metadata?
 
-2. Over the past couple of weeks, we've been working with vignettes from the Viral Texts data (the `VT-vignettes.csv` file in the data folder). These texts are not available as individual files, like the Wright data, but rather as a column in a dataframe. Yet, we can still perform some of the same kinds of transformations. For this exercise, try the following:
+``` {r}
+
+```
+
+2. Choose a list of words you're interested in from the Wright data, and then reduce the frame down so that it only includes phrases that have your word in the middle position.
+
+``` {r}
+
+```
+
+3. For this exercise, you should assemble your own corpus of *no fewer than **five** distinct texts* and read them into R as a tibble. What is the most common word in your corpus? What is the most common trigram? Just to make this even more challenging/meaningful, exclude most common words, or "stop words." The `tidytext` package has a built in data frame featuring 1,149 stop words. Do `?stop_words` to learn more.
+
+4. (reach goal) Over the past couple of weeks, we've been working with vignettes from the Viral Texts data (the `VT-vignettes.csv` file in the data folder). These texts are not available as individual files, like the Wright data, but rather as a column in a dataframe. Yet, we can still perform some of the same kinds of transformations. For this exercise, try the following:
 
 - Tokenize the vignettes (hint, you can adapt the function we used above to work with a dataframe rather than a folder of files, but you may need to select just one text from each cluster)
 
@@ -365,6 +377,4 @@ Fun stuff.
 
 - Create a concordance of the vignettes
 
-3. For this exercise, you should assemble your own corpus of *no fewer than **five** distinct texts* and read them into R as a tibble. What is the most common word in your corpus? What is the most common trigram? Just to make this even more challenging/meaningful, exclude most common words, or "stop words." The `tidytext` package has a built in data frame featuring 1,149 stop words. Do `?stop_words` to learn more.
-
-4. (reach goal) Create a random vignette! Using the method we utilized to create a random walk generator from the Wright texts, create a random vignette from the Viral Texts data. Then, once you get the random walk generator up and running, stop it when you feel like you have something worth sharing and copy and paste the output below (warning: there will be bad OCR; feel free to pull together various text strings)...
+- Create a random vignette! Using the method we utilized to create a random walk generator from the Wright texts, create a random vignette from the Viral Texts data. Then, once you get the random walk generator up and running, stop it when you feel like you have something worth sharing and copy and paste the output below (warning: there will be bad OCR; feel free to pull together various text strings)...
