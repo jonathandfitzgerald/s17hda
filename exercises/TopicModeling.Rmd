@@ -1,0 +1,111 @@
+---
+title: "TopicModeling"
+author: "Ryan Cordell"
+date: "2/23/2017"
+output: html_document
+---
+
+Last week we talked about modeling, and today we'll take on one method for modeling texts that has been extremely popular in recent digital humanities research: topic modeling or, if you want to impress someone, latent dirichlet allocation. Topic modeling is a technique that tends to work best on really *long* stretches of many *distinct* texts. In other words, we definitely need a corpus, and we can use the Wright American fiction collection from last week. 
+
+
+# Modeling Topics with Mallet
+
+Now we're going to use the `mallet` library to do some topic modelling.
+
+Again, we're creating a single variable that holds the text, and mostly writing chains.
+
+But since `mallet` uses some other non-R software under the hood, there's a little bit more pure cutting and pasting of code blocks below.
+
+First, we load the libraries we've been using: the same, now plus `mallet` and a new, strange one. Anyone know what `source("readWright.R")` is doing here?
+
+```{r}
+library(mallet)
+library(tidyverse)
+library(tidytext)
+source("readWright.R")
+```
+
+# Don't Forget Ngrams!!
+
+Last week Fitz gave you a great introduction to text analysis in R, which starts with tokenizing. Before we delve into topic modeling, I wanted to briefly remind you that words are not the only possible tokens
+
+```{r}
+
+allWRIGHTtext %>%
+  unnest_tokens(ngram,text,token = "ngrams", n = 5) %>% 
+  group_by(fileID, ngram) %>% 
+  summarize(count = n()) %>%
+  arrange(desc(count)) %>%
+  View()
+
+```
+
+PLACEHOLDER
+
+```{r}
+
+allWRIGHTtext %>%
+  unnest_tokens(ngram,text,token = "ngrams", n=5) %>%
+  group_by(fileID,ngram) %>% 
+  summarize(count=n()) %>% 
+  spread(fileID,count,fill=0) %>%
+  filter(rowSums(.[,-1]) > 1) %>%
+  View()
+
+```
+
+
+
+# Topic Models
+
+```{r}
+names(allWRIGHTtext) = c("id","text")
+input=allWRIGHTtext 
+
+n.topics=32
+
+mallet.instances <- mallet.import(input$id, input$text, stoplist.file="data/stopwords.txt",
+                                  token.regexp = "\\w+",preserve.case=F)
+
+topic.model <- MalletLDA(num.topics=n.topics)
+topic.model$loadDocuments(mallet.instances)
+
+#Look at the word frequencies sorted in order.
+vocabulary <- topic.model$getVocabulary()
+word.freqs <- mallet.word.freqs(topic.model)
+
+#Some preferences. Inside baseball: see Wallach and Mimno for what's going on.
+topic.model$setAlphaOptimization(20, 50)
+topic.model$train(300)
+#Increase the fit without changing the topic distribution; optional
+topic.model$maximize(10)
+
+#Gets a list of the documents and topics
+doc.topics <- mallet.doc.topics(topic.model, smoothed=T, normalized=T)
+#Changes the orientation of that matrix to be horizontal:
+topic.docs <- t(doc.topics)
+
+#Gets a list of the top words.
+topic.words <- mallet.topic.words(topic.model, smoothed=T, normalized=T)
+
+
+#Assign some labels to the topics
+topics.labels <- rep("", n.topics)
+for (topic in 1:n.topics) {
+  topics.labels[topic] <- paste(
+    mallet.top.words(topic.model, topic.words[topic,], num.top.words=5)$words, collapse=" "
+)}
+
+#to look at the labels, type "topics.labels"
+
+
+rownames(doc.topics) = input$id
+colnames(doc.topics) = topics.labels
+```
+
+
+
+
+# Exercises
+
+1. Are there any shared ngrams between texts in the Wright American Fiction corpus? Hint: look back at the `GrammaR.Rmd` file from our first week of class.
