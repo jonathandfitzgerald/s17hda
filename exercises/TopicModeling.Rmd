@@ -105,7 +105,13 @@ colnames(doc.topics) = topics.labels
 
 
 
+```{r}
 
-# Exercises
+allcounts <- as_data_frame(doc.topics) %>%
+  mutate(document = rownames(allcounts))
+topicCounts = allcounts %>% 
+  gather(topic,proportion,-document)
 
-1. Are there any shared ngrams between texts in the Wright American Fiction corpus? Hint: look back at the `GrammaR.Rmd` file from our first week of class.
+```
+
+
