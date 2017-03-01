@@ -56,21 +56,6 @@ WRIGHTgrams <- allWRIGHTtext %>%
   
 ```
 
-
-```{r}
-
-# WRIGHTngrams <- allWRIGHTtext %>%
-#  unnest_tokens(ngram,text,token = "ngrams", n=4) %>%
-#  group_by(fileID,ngram) %>% 
-#  summarize(count=n()) %>% 
-#  spread(fileID,count,fill=0) %>% 
-#  # filter(rowSums(.[,-1]) > 1) %>%
-#  filter(apply(.[,-1], 1, function(row) any(table(row) >= 2)))
-
-```
-
-
-
 # Topic Models
 
 ```{r}
