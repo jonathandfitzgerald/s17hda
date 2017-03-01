@@ -59,12 +59,12 @@ WRIGHTgrams <- allWRIGHTtext %>%
 # Topic Models
 
 ```{r}
-names(allWRIGHTtext) = c("id","text")
+names(allWRIGHTtext) = c("title","text")
 input=allWRIGHTtext 
 
 n.topics=32
 
-mallet.instances <- mallet.import(input$id, input$text, stoplist.file="data/stopwords.txt",
+mallet.instances <- mallet.import(input$title, input$text, stoplist.file="data/stop_words.txt",
                                   token.regexp = "\\w+",preserve.case=F)
 
 topic.model <- MalletLDA(num.topics=n.topics)
@@ -99,7 +99,7 @@ for (topic in 1:n.topics) {
 #to look at the labels, type "topics.labels"
 
 
-rownames(doc.topics) = input$id
+rownames(doc.topics) = input$title
 colnames(doc.topics) = topics.labels
 ```
 
