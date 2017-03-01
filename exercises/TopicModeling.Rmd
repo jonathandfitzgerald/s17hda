@@ -10,19 +10,20 @@ Last week we talked about modeling, and today we'll take on one method for model
 
 # Modeling Topics with Mallet
 
-Now we're going to use the `mallet` library to do some topic modelling.
-
-Again, we're creating a single variable that holds the text, and mostly writing chains.
-
-But since `mallet` uses some other non-R software under the hood, there's a little bit more pure cutting and pasting of code blocks below.
-
-First, we load the libraries we've been using: the same, now plus `mallet` and a new, strange one. Anyone know what `source("readWright.R")` is doing here?
+Now we're going to use the `mallet` library to do some topic modelling. First, let's load the libraries we've been using: the same, now plus `mallet` and a new, strange one. Anyone know what `source("readWright.R")` is doing here?
 
 ```{r}
 library(mallet)
 library(tidyverse)
 library(tidytext)
 source("readWright.R")
+```
+
+Now we've got the Wright data just like last week. You might notice that we've got a more human readable title for these texts this time. If you look in the `readWright.R` file you'll see these two lines, which should by this point be pretty self explanatory: 
+
+```
+WRIGHTregex <- regexpr("[A-Z][a-z]+.+\\ \\.", allWRIGHTtext$text)
+allWRIGHTtext$title <- regmatches(allWRIGHTtext$text, WRIGHTregex)
 ```
 
 # Don't Forget Ngrams!!
@@ -33,7 +34,7 @@ Last week Fitz gave you a great introduction to text analysis in R, which starts
 
 allWRIGHTtext %>%
   unnest_tokens(ngram,text,token = "ngrams", n = 5) %>% 
-  group_by(fileID, ngram) %>% 
+  group_by(title, ngram) %>% 
   summarize(count = n()) %>%
   arrange(desc(count)) %>%
   View()
@@ -44,16 +45,27 @@ Maybe it would be more interesting, however, to look at shared language. What do
 
 ```{r}
 
-WRIGHTngrams <- allWRIGHTtext %>%
-  unnest_tokens(ngram,text,token = "ngrams", n=4) %>%
-  group_by(fileID,ngram) %>% 
-  summarize(count=n()) %>% 
-  spread(fileID,count,fill=0)
-  # filter(rowSums(.[,-1]) > 1) %>%
+WRIGHTgrams <- allWRIGHTtext %>%
+  unnest_tokens(ngram,text,token = "ngrams", n = 4) %>% 
+  group_by(title, ngram) %>% 
+  summarize(count = n()) %>%
+  ungroup() %>%
+  group_by(ngram) %>%
+  filter(n() > 1) %>%
+  arrange(desc(ngram))
+  
+```
 
-row_sub <- apply(WRIGHTngrams[,-1], 1, function(row) any(row > 0))
-test <- WRIGHTngrams[row_sub,]
 
+```{r}
+
+# WRIGHTngrams <- allWRIGHTtext %>%
+#  unnest_tokens(ngram,text,token = "ngrams", n=4) %>%
+#  group_by(fileID,ngram) %>% 
+#  summarize(count=n()) %>% 
+#  spread(fileID,count,fill=0) %>% 
+#  # filter(rowSums(.[,-1]) > 1) %>%
+#  filter(apply(.[,-1], 1, function(row) any(table(row) >= 2)))
 
 ```
 
