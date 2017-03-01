@@ -56,62 +56,54 @@ WRIGHTgrams <- allWRIGHTtext %>%
   
 ```
 
+Ok, with that reminder in place let's move on to our main event today...
+
 # Topic Models
 
+The code below will prepare and build the model. This will likely be the most opaque code we've run in our class. We will discuss some of the details today, while for others you may need to refer directly to Blei, Wallach and Mimno's papers about the topic modeling algorithm. The primary bits of this code that you will want to change as you move forward are few: likely only the input data (in this case `allWRIGHTtext`) and `num.topics`, which determines...you guessed it...how many topics Mallet will sort the words in the corpus into.
+
 ```{r}
-names(allWRIGHTtext) = c("title","text")
-input=allWRIGHTtext 
+mallet.instances <- mallet.import(id.array = allWRIGHTtext$title, 
+                                  text.array = allWRIGHTtext$text, 
+                                  stoplist.file = "./data/stop_words.txt")
 
-n.topics=32
-
-mallet.instances <- mallet.import(input$title, input$text, stoplist.file="data/stop_words.txt",
-                                  token.regexp = "\\w+",preserve.case=F)
-
-topic.model <- MalletLDA(num.topics=n.topics)
+topic.model <- MalletLDA(num.topics=25, alpha.sum = 1, beta = 0.1)
 topic.model$loadDocuments(mallet.instances)
-
-#Look at the word frequencies sorted in order.
-vocabulary <- topic.model$getVocabulary()
-word.freqs <- mallet.word.freqs(topic.model)
-
-#Some preferences. Inside baseball: see Wallach and Mimno for what's going on.
 topic.model$setAlphaOptimization(20, 50)
-topic.model$train(300)
-#Increase the fit without changing the topic distribution; optional
+topic.model$train(500)
 topic.model$maximize(10)
+
+topic_labels <- mallet.topic.labels(topic.model,mallet.topic.words(topic.model),num.top.words = 7)
+topic_labels
+
+```
+
+Now you can look at the most common words at greater length.
+
+```{r}
+# What are the top words in topics 2, 3, and 4?
+topic.words = mallet.topic.words(topic.model)
+
+mallet.top.words(topic.model, word.weights = topic.words[2,], num.top.words = 10)
+mallet.top.words(topic.model, word.weights = topic.words[3,], num.top.words = 10)
+mallet.top.words(topic.model, word.weights = topic.words[4,], num.top.words = 10)
+
+```
+
+
+We can also correlate topics with texts:
+
+```{r}
 
 #Gets a list of the documents and topics
 doc.topics <- mallet.doc.topics(topic.model, smoothed=T, normalized=T)
-#Changes the orientation of that matrix to be horizontal:
-topic.docs <- t(doc.topics)
+rownames(doc.topics) = allWRIGHTtext$title
+colnames(doc.topics) = topic_labels
 
-#Gets a list of the top words.
-topic.words <- mallet.topic.words(topic.model, smoothed=T, normalized=T)
-
-
-#Assign some labels to the topics
-topics.labels <- rep("", n.topics)
-for (topic in 1:n.topics) {
-  topics.labels[topic] <- paste(
-    mallet.top.words(topic.model, topic.words[topic,], num.top.words=5)$words, collapse=" "
-)}
-
-#to look at the labels, type "topics.labels"
-
-
-rownames(doc.topics) = input$title
-colnames(doc.topics) = topics.labels
-```
-
-
-
-```{r}
-
-allcounts <- as_data_frame(doc.topics) %>%
-  mutate(document = rownames(allcounts))
-topicCounts = allcounts %>% 
-  gather(topic,proportion,-document)
+doc.topics %>%
+  as_data_frame() %>%
+  mutate(title = rownames(doc.topics)) %>%
+  gather(topic, proportion, -title) %>%
+  View()
 
 ```
-
-
