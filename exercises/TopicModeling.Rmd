@@ -40,17 +40,20 @@ allWRIGHTtext %>%
 
 ```
 
-PLACEHOLDER
+Maybe it would be more interesting, however, to look at shared language. What does the code below do?
 
 ```{r}
 
-allWRIGHTtext %>%
-  unnest_tokens(ngram,text,token = "ngrams", n=5) %>%
+WRIGHTngrams <- allWRIGHTtext %>%
+  unnest_tokens(ngram,text,token = "ngrams", n=4) %>%
   group_by(fileID,ngram) %>% 
   summarize(count=n()) %>% 
-  spread(fileID,count,fill=0) %>%
-  filter(rowSums(.[,-1]) > 1) %>%
-  View()
+  spread(fileID,count,fill=0)
+  # filter(rowSums(.[,-1]) > 1) %>%
+
+row_sub <- apply(WRIGHTngrams[,-1], 1, function(row) any(row > 0))
+test <- WRIGHTngrams[row_sub,]
+
 
 ```
 
