@@ -22,7 +22,7 @@ source("readWright.R")
 Now we've got the Wright data just like last week. You might notice that we've got a more human readable title for these texts this time. If you look in the `readWright.R` file you'll see these two lines, which should by this point be pretty self explanatory: 
 
 ```
-WRIGHTregex <- regexpr("[A-Z][a-z]+.+\\ \\.", allWRIGHTtext$text)
+WRIGHTregex <- regexpr("(?<=----\\s)([A-Z].*\\s\\.\\s)(?=Digital)", WRIGHT$text, perl = TRUE)
 allWRIGHTtext$title <- regmatches(allWRIGHTtext$text, WRIGHTregex)
 ```
 
@@ -78,7 +78,7 @@ topic_labels
 
 ```
 
-Now you can look at the most common words at greater length. Feel free to experiment with the topics sampled and the number of words shown from each. This will help you get a sense, I hope, of what a "topic" comprises.
+Now you can look at the most common words at greater length.
 
 ```{r}
 # What are the top words in topics 2, 3, and 4?
@@ -90,35 +90,20 @@ mallet.top.words(topic.model, word.weights = topic.words[4,], num.top.words = 10
 
 ```
 
-With a few more data transformation, we can also correlate topics with texts:
+
+We can also correlate topics with texts:
 
 ```{r}
 
 #Gets a list of the documents and topics
 doc.topics <- mallet.doc.topics(topic.model, smoothed=T, normalized=T)
-rownames(doc.topics) <- allWRIGHTtext$title
-colnames(doc.topics) <- topic_labels
+rownames(doc.topics) = allWRIGHTtext$title
+colnames(doc.topics) = topic_labels
 
-topicDF <- doc.topics %>%
+doc.topics %>%
   as_data_frame() %>%
   mutate(title = rownames(doc.topics)) %>%
-  gather(topic, proportion, -title)
-View(topicDF)
-
-# we could also arrange our table by title
-topicDF %>% 
-  arrange(title) %>%
+  gather(topic, proportion, -title) %>%
   View()
-
-```
-
-Now, there's something important to note before we go much farther. If you reran all of the topic modeling code above *without changing anything*, the topics derived would be similar, but *not identical* and *not listed in the same order*. This is because Mallet starts building the model using a random seed, meaning that it will not come to precisely the same conclusions in two subsequent analyses, even if all the parameters remain exactly the same. Let's talk a bit about the epistemelogical assumptions and consequences of that reality before we move on.
-
-# Visualizing Topic Models
-
-```{r}
-
-topicDF %>% filter() %>% 
-  geom_point(aes(x = proportion, y = topic))
 
 ```
