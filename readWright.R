@@ -16,4 +16,5 @@ readWRIGHTtext = function(file) {
 
 allWRIGHTtext = tibble(title=WRIGHT) %>% 
   group_by(title) %>% 
-  do(readWRIGHTtext(.$title)) 
+  do(readWRIGHTtext(.$title)) %>%
+  slice(1)

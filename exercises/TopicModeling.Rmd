@@ -176,10 +176,11 @@ ggplot(topicDF) + geom_tile(aes(x=title,y=topic,fill=proportion))
 
 ```
 
+We could also do this as a scatterplot, but it's not very useful. Why not? In a bit we'll make this more useful...
 ```{r}
 
 ggplot(topicDF) + 
-  geom_point(aes(x=topic,y=proportion)) + 
+  geom_point(aes(x=topic,y=proportion,text = paste("title:", title))) + 
   coord_flip()
 
 ```
@@ -193,10 +194,10 @@ ggplot(topicDF %>% filter(title == "Appell, Theron B.. The Knight of Castile" & 
 
 ```
 
-Or perhaps we may want to look at particular topics to see their most relevant texts (you'll probably need to change `topic2search` to a topic that appears in your date):
+Or perhaps we may want to look at particular topics to see their most relevant texts (what's going on with the `topic2search` variable?):
 ```{r}
 
-topic2search = "skinner boston peace mose jubilee"
+topic2search = as.character(topicDF[240,2])
 
 ggplot(topicDF %>%
          filter(topic == topic2search) %>% 
@@ -207,6 +208,7 @@ ggplot(topicDF %>%
   theme(axis.text.x = element_text(angle = 90, hjust = 1))
 
 ```
+
 
 From [*The Historian's Macroscope*](http://www.themacroscope.org/?page_id=822), another way to visualize topics, which clusters them based on the similarity of words in each topic. You'll probably have to expand your plots window to really see this one:
 
@@ -231,6 +233,15 @@ ggplotly(p)
 
 ```
 
+```{r}
+
+t = ggplot(topicDF) + 
+  geom_point(aes(x=topic,y=proportion,text = paste("title:", title))) + 
+  coord_flip()
+
+ggplotly(t)
+
+```
 ## Exercises
 
 This week the exercise is simple: you need to produce and graph topic models based on a corpus of your choosing. If your corpus is mostly metadata, this may require finding some more text heavy data for this week's exercises. 
