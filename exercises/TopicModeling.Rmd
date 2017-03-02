@@ -62,9 +62,13 @@ Ok, with that reminder in place let's move on to our main event today...
 The code below will prepare and build the model. This will likely be the most opaque code we've run in our class. We will discuss some of the details today, while for others you may need to refer directly to Blei, Wallach and Mimno's papers about the topic modeling algorithm. The primary bits of this code that you will want to change as you move forward are few: likely only the input data (in this case `allWRIGHTtext`) and `num.topics`, which determines...you guessed it...how many topics Mallet will sort the words in the corpus into.
 
 ```{r}
+
+stopwords <- as.list(stop_words$word)
+write.table(stopwords, "./data/stopwords.txt")
+
 mallet.instances <- mallet.import(id.array = allWRIGHTtext$title, 
                                   text.array = allWRIGHTtext$text, 
-                                  stoplist.file = "./data/stop_words.txt")
+                                  stoplist.file = "./data/stopwords.txt")
 
 n.topics <- 25
 
