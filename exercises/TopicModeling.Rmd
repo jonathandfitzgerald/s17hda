@@ -98,10 +98,19 @@ doc.topics <- mallet.doc.topics(topic.model, smoothed=T, normalized=T)
 rownames(doc.topics) = allWRIGHTtext$title
 colnames(doc.topics) = topic_labels
 
-doc.topics %>%
+topicDF <- doc.topics %>%
   as_data_frame() %>%
   mutate(title = rownames(doc.topics)) %>%
-  gather(topic, proportion, -title) %>%
+  gather(topic, proportion, -title)
+View(topicDF)
+
+# we could also arrange our table by title
+topicDF %>% 
+  arrange(title) %>%
   View()
 
 ```
+
+Now, there's something important to note before we go much farther. If you reran all of the topic modeling code above *without changing anything*, the topics derived would be similar, but *not identical* and *not listed in the same order*. This is because Mallet starts building the model using a random seed, meaning that it will not come to precisely the same conclusions in two subsequent analyses, even if all the parameters remain exactly the same. Let's talk a bit about the epistemelogical assumptions and consequences of that reality before we move on.
+
+# Visualizing Topic Models
