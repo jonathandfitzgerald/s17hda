@@ -22,7 +22,7 @@ source("readWright.R")
 Now we've got the Wright data just like last week. You might notice that we've got a more human readable title for these texts this time. If you look in the `readWright.R` file you'll see these two lines, which should by this point be pretty self explanatory: 
 
 ```
-WRIGHTregex <- regexpr("(?<=----\\s)([A-Z].*\\s\\.\\s)(?=Digital)", WRIGHT$text, perl = TRUE)
+WRIGHTregex <- regexpr("(?<=----\\s)([A-Z].*)(?=\\s\\.\\sDigital)", WRIGHT$text, perl = TRUE)
 allWRIGHTtext$title <- regmatches(allWRIGHTtext$text, WRIGHTregex)
 ```
 

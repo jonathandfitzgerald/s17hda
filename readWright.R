@@ -4,7 +4,7 @@ readWRIGHTtext = function(file) {
   message(file)
   text = paste(scan(file, sep="\n",what="raw",strip.white = TRUE))
   WRIGHT = tibble(fileID=file,text=text) %>% group_by(fileID) %>% summarise(text = paste(text, collapse = " "))
-  WRIGHTregex <- regexpr("(?<=----\\s)([A-Z].*\\s\\.\\s)(?=Digital)", WRIGHT$text, perl = TRUE)
+  WRIGHTregex <- regexpr("(?<=----\\s)([A-Z].*)(?=\\s\\.\\sDigital)", WRIGHT$text, perl = TRUE)
   WRIGHT$title <- regmatches(WRIGHT$text, WRIGHTregex)
   WRIGHT = select(WRIGHT, title, text)
   return(WRIGHT)
