@@ -13,10 +13,9 @@ Last week we talked about modeling, and today we'll take on one method for model
 Now we're going to use the `mallet` library to do some topic modelling. First, let's load the libraries we've been using: the same, now plus `mallet` and a new, strange one. Anyone know what `source("readWright.R")` is doing here?
 
 ```{r}
-library(mallet)
-library(tidyverse)
-library(tidytext)
+
 source("readWright.R")
+
 ```
 
 Now we've got the Wright data just like last week. You might notice that we've got a more human readable title for these texts this time. If you look in the `readWright.R` file you'll see these two lines, which may by this point be self explanatory, though I'll confess that the positive lookbehind at the front and positive lookahead at the end were figured out by Fitz and bend my brain a little bit: 

@@ -1,3 +1,7 @@
+library(mallet)
+library(tidyverse)
+library(tidytext)
+
 WRIGHT = list.files("data/wright-txt",full.names = TRUE)
 
 readWRIGHTtext = function(file) {
