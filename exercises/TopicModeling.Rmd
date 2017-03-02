@@ -1,7 +1,7 @@
 ---
 title: "TopicModeling"
-author: "Ryan Cordell"
-date: "2/23/2017"
+author: "Ryan Cordell and Jonathan Fitzgerald"
+date: "03/02/2017"
 output: html_document
 ---
 
@@ -163,8 +163,29 @@ ggplot(topicDF %>%
 
 ```
 
+From [*The Historian's Macroscope*](http://www.themacroscope.org/?page_id=822), another way to visualize topics, which clusters them based on the similarity of words in each topic. You'll probably have to expand your plots window to really see this one:
+
 ```{r}
 
 plot(hclust(dist(topic.words)), labels=topic_labels)
 
 ```
+
+Finally, some visualization candy from Fitz. You'll need to install the `plotly` package. The resulting plot might look familiar, but hover your mouse over it to see why it's something far more interesting than we produced above.
+
+```{r}
+
+p = topicDF %>%
+  group_by(topic) %>%
+  mutate(id = 1:n()) %>% 
+  ggplot() + 
+  geom_tile(aes(x=id,y=topic,fill=proportion,text = paste("title:", title)))
+
+library(plotly)
+ggplotly(p)
+
+```
+
+## Exercises
+
+This week the exercise is simple: you need to produce and graph topic models based on a corpus of your choosing. If your corpus is mostly metadata, this may require finding some more text heavy data for this week's exercises. 
