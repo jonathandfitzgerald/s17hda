@@ -66,22 +66,36 @@ mallet.instances <- mallet.import(id.array = allWRIGHTtext$title,
                                   text.array = allWRIGHTtext$text, 
                                   stoplist.file = "./data/stop_words.txt")
 
-topic.model <- MalletLDA(num.topics=25, alpha.sum = 1, beta = 0.1)
+n.topics <- 25
+
+topic.model <- MalletLDA(num.topics=n.topics, alpha.sum = 1, beta = 0.1)
 topic.model$loadDocuments(mallet.instances)
 topic.model$setAlphaOptimization(20, 50)
 topic.model$train(500)
 topic.model$maximize(10)
 
-topic_labels <- mallet.topic.labels(topic.model,mallet.topic.words(topic.model),num.top.words = 7)
-topic_labels
+#Assign some labels to the topics
+topic_labels <- rep("", n.topics)
+for (topic in 1:n.topics) {
+  topic_labels[topic] <- paste(
+    mallet.top.words(topic.model, topic.words[topic,], num.top.words=5)$words, collapse=" "
+)}
 
 ```
+
+When we model our topics, Mallet finds a number of other useful stats about our corpus. What are the lines below doing?
+```{r}
+vocabulary <- topic.model$getVocabulary()
+word_freqs <- mallet.word.freqs(topic.model)
+```
+Try typing `length(vocabulary)` into the console. What does that tell you?
+
 
 Now you can look at the most common words at greater length.
 
 ```{r}
 # What are the top words in topics 2, 3, and 4?
-topic.words = mallet.topic.words(topic.model)
+topic.words <- mallet.topic.words(topic.model)
 
 mallet.top.words(topic.model, word.weights = topic.words[2,], num.top.words = 10)
 mallet.top.words(topic.model, word.weights = topic.words[3,], num.top.words = 10)
@@ -125,7 +139,32 @@ ggplot(topicDF) + geom_tile(aes(x=title,y=topic,fill=proportion))
 
 ggplot(topicDF) + 
   geom_point(aes(x=topic,y=proportion)) + 
-  coord_flip() +
-  facet_grid(. ~ title)
+  coord_flip()
+
+```
+
+```{r}
+
+ggplot(topicDF %>% filter(title == "Appell, Theron B.. The Knight of Castile" & proportion >= 0.1)) +
+  geom_point(aes(x=topic,y=proportion)) + 
+  coord_flip()
+
+```
+
+```{r}
+
+ggplot(topicDF %>%
+         filter(topic == "lank lady antoine") %>% 
+         mutate(title = substr(title, 1,20)) %>%
+         filter(proportion >= 0.1)) +
+  geom_point(aes(x=title,y=proportion)) +
+  labs(x="Story",y="Frequency of Topic 'lank lady antoine'") + 
+  theme(axis.text.x = element_text(angle = 90, hjust = 1))
+
+```
+
+```{r}
+
+plot(hclust(dist(topic.words)), labels=topic_labels)
 
 ```
