@@ -89,7 +89,6 @@ mallet.top.words(topic.model, word.weights = topic.words[4,], num.top.words = 10
 
 ```
 
-
 We can also correlate topics with texts:
 
 ```{r}
