@@ -73,8 +73,22 @@ topic.model$loadDocuments(mallet.instances)
 topic.model$setAlphaOptimization(20, 50)
 topic.model$train(500)
 topic.model$maximize(10)
+```
 
-#Assign some labels to the topics
+Now you can look at the most common words at greater length.
+
+```{r}
+# What are the top words in topics 2, 3, and 4?
+topic.words <- mallet.topic.words(topic.model)
+
+mallet.top.words(topic.model, word.weights = topic.words[2,], num.top.words = 10)
+mallet.top.words(topic.model, word.weights = topic.words[3,], num.top.words = 10)
+mallet.top.words(topic.model, word.weights = topic.words[4,], num.top.words = 10)
+```
+
+And we can use the top words in the topic to make a human readable "label" for each one. Remember, though, that the label does not comprise the topic; it's just a subset.
+
+```{r}
 topic_labels <- rep("", n.topics)
 for (topic in 1:n.topics) {
   topic_labels[topic] <- paste(
@@ -91,17 +105,7 @@ word_freqs <- mallet.word.freqs(topic.model)
 Try typing `length(vocabulary)` into the console. What does that tell you?
 
 
-Now you can look at the most common words at greater length.
 
-```{r}
-# What are the top words in topics 2, 3, and 4?
-topic.words <- mallet.topic.words(topic.model)
-
-mallet.top.words(topic.model, word.weights = topic.words[2,], num.top.words = 10)
-mallet.top.words(topic.model, word.weights = topic.words[3,], num.top.words = 10)
-mallet.top.words(topic.model, word.weights = topic.words[4,], num.top.words = 10)
-
-```
 
 We can also correlate topics with texts:
 
