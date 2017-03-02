@@ -123,7 +123,7 @@ count(gatherWords, tmodel) %>% arrange(-n) %>% View()
 
 What did we do there? First, we have to turn the `topic.words` matrix into a dataframe and then rename the columns and rows with the actual words and topic labels, respectively. The next couple lines converts the rownames into a column, and then we gather the frame so that we have our topics, words, and counts (removing any rows with a zero count). Finally, we count the number of rows for each topic, and that gives us the number of words per topic.
 
-Then, let's try to get a sense of what words are shared across topics. 
+Then, let's try to get a sense of what words are shared across topics. One question for you: why put "whiskey" into a variable of its own? Couldn't you just write `filter(word == "whiskey")` in the longer code block? 
 
 ```{r}
 
@@ -138,7 +138,6 @@ gatherWords %>% filter(word == word2search) %>%
   labs(x="Topic",y="Count") +
   ggtitle(paste("Number of times the word", word2search, "appears")) +
   theme(plot.title = element_text(family = "Trebuchet MS", color="#666666", face="bold", size=22, hjust=0.5)) 
-
 
 ```
 
@@ -188,7 +187,7 @@ ggplot(topicDF) +
 We can also look at particular texts to see their most relevant topics:
 ```{r}
 
-ggplot(topicDF %>% filter(title == "Appell, Theron B.. The Knight of Castile" & proportion >= 0.1)) +
+ggplot(topicDF %>% filter(title == "Appell, Theron B.. The Knight of Castile" & proportion > 0.01)) +
   geom_point(aes(x=topic,y=proportion)) + 
   coord_flip()
 
