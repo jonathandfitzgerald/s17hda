@@ -18,7 +18,7 @@ source("readWright.R")
 
 ```
 
-Now we've got the Wright data just like last week. You might notice that we've got a more human readable title for these texts this time. If you look in the `readWright.R` file you'll see these two lines, which may by this point be self explanatory, though I'll confess that the positive lookbehind at the front and positive lookahead at the end were figured out by Fitz and bend my brain a little bit: 
+Now we've got the Wright data just like last week. You might notice that we've got a more human readable title for these texts this time. If you look in the `readWright.R` file you'll see these two lines, which may by this point be self explanatory, though I'll confess that Fitz figured out the positive lookbehind at the front and positive lookahead at the end that bent my brain a little bit. There's [a breakdown here](https://regex101.com/r/q5pKwl/1).
 
 ```
 WRIGHTregex <- regexpr("(?<=----\\s)([A-Z].*)(?=\\s\\.\\sDigital)", WRIGHT$text, perl = TRUE)
@@ -114,3 +114,18 @@ topicDF %>%
 Now, there's something important to note before we go much farther. If you reran all of the topic modeling code above *without changing anything*, the topics derived would be similar, but *not identical* and *not listed in the same order*. This is because Mallet starts building the model using a random seed, meaning that it will not come to precisely the same conclusions in two subsequent analyses, even if all the parameters remain exactly the same. Let's talk a bit about the epistemelogical assumptions and consequences of that reality before we move on.
 
 # Visualizing Topic Models
+
+```{r}
+
+ggplot(topicDF) + geom_tile(aes(x=title,y=topic,fill=proportion))
+
+```
+
+```{r}
+
+ggplot(topicDF) + 
+  geom_point(aes(x=topic,y=proportion)) + 
+  coord_flip() +
+  facet_grid(. ~ title)
+
+```
