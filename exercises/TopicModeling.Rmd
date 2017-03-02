@@ -102,10 +102,47 @@ When we model our topics, Mallet finds a number of other useful stats about our 
 vocabulary <- topic.model$getVocabulary()
 word_freqs <- mallet.word.freqs(topic.model)
 ```
+
 Try typing `length(vocabulary)` into the console. What does that tell you?
 
+There is a temptation when working with topic models, to take the labels we generated above--the first 5 words of the topic, in that case--as the entire topic. But this obscures the fact that each topic has many more words, and that words appear (with varying weights) in many different topics. 
+
+First, let's take a look at how many words appear in each topic. 
+
+```{r}
+
+wordFrame = topic.words %>% as.data.frame()
+colnames(wordFrame) = vocabulary
+rownames(wordFrame) = topic_labels
+wordFrame <- wordFrame %>% rownames_to_column("tmodel")
+gatherWords = wordFrame %>% gather(word, count, -tmodel) %>% filter(count!=0)
+
+count(gatherWords, tmodel) %>% arrange(-n) %>% View()
+
+```
+
+What did we do there? First, we have to turn the `topic.words` matrix into a dataframe and then rename the columns and rows with the actual words and topic labels, respectively. The next couple lines converts the rownames into a column, and then we gather the frame so that we have our topics, words, and counts (removing any rows with a zero count). Finally, we count the number of rows for each topic, and that gives us the number of words per topic.
+
+Then, let's try to get a sense of what words are shared across topics. 
+
+```{r}
+
+count(gatherWords, word) %>% arrange(-n) %>% View()
+
+word2search <- "whiskey"
+
+gatherWords %>% filter(word == word2search) %>% 
+  ggplot() +
+  geom_bar(stat = "identity", aes(x=reorder(tmodel, count),y=count, fill=tmodel)) +
+  coord_flip() +
+  labs(x="Topic",y="Count") +
+  ggtitle(paste("Number of times the word", word2search, "appears")) +
+  theme(plot.title = element_text(family = "Trebuchet MS", color="#666666", face="bold", size=22, hjust=0.5)) 
 
 
+```
+
+You can change the variable `word2search` to anything you want. Have fun.
 
 We can also correlate topics with texts:
 
@@ -133,6 +170,7 @@ Now, there's something important to note before we go much farther. If you reran
 
 # Visualizing Topic Models
 
+Heat maps are a common way to show how topics correlate with texts:
 ```{r}
 
 ggplot(topicDF) + geom_tile(aes(x=title,y=topic,fill=proportion))
@@ -147,6 +185,7 @@ ggplot(topicDF) +
 
 ```
 
+We can also look at particular texts to see their most relevant topics:
 ```{r}
 
 ggplot(topicDF %>% filter(title == "Appell, Theron B.. The Knight of Castile" & proportion >= 0.1)) +
@@ -155,14 +194,17 @@ ggplot(topicDF %>% filter(title == "Appell, Theron B.. The Knight of Castile" & 
 
 ```
 
+Or perhaps we may want to look at particular topics to see their most relevant texts (you'll probably need to change `topic2search` to a topic that appears in your date):
 ```{r}
 
+topic2search = "skinner boston peace mose jubilee"
+
 ggplot(topicDF %>%
-         filter(topic == "lank lady antoine") %>% 
+         filter(topic == topic2search) %>% 
          mutate(title = substr(title, 1,20)) %>%
          filter(proportion >= 0.1)) +
   geom_point(aes(x=title,y=proportion)) +
-  labs(x="Story",y="Frequency of Topic 'lank lady antoine'") + 
+  labs(x="Story",y=paste("Frequency of Topic \"",topic2search, "\"", collapse = "")) + 
   theme(axis.text.x = element_text(angle = 90, hjust = 1))
 
 ```
