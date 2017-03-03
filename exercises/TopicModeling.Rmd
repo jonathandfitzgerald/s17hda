@@ -63,8 +63,8 @@ The code below will prepare and build the model. This will likely be the most op
 
 ```{r}
 
-stopwords <- as.list(stop_words$word)
-write.table(stopwords, "./data/stopwords.txt")
+stopwords <- as.list(stop_words$word) %>% unlist()
+write(stopwords, "./data/stopwords.txt")
 
 mallet.instances <- mallet.import(id.array = allWRIGHTtext$title, 
                                   text.array = allWRIGHTtext$text, 
@@ -115,7 +115,7 @@ First, let's take a look at how many words appear in each topic.
 
 ```{r}
 
-wordFrame = topic.words %>% as.data.frame()
+wordFrame = topic.words %>% as_data_frame()
 colnames(wordFrame) = vocabulary
 rownames(wordFrame) = topic_labels
 wordFrame <- wordFrame %>% rownames_to_column("tmodel")
@@ -133,14 +133,14 @@ Then, let's try to get a sense of what words are shared across topics. One quest
 
 count(gatherWords, word) %>% arrange(-n) %>% View()
 
-word2search <- "whiskey"
+word2search <- "wine"
 
 gatherWords %>% filter(word == word2search) %>% 
   ggplot() +
   geom_bar(stat = "identity", aes(x=reorder(tmodel, count),y=count, fill=tmodel)) +
   coord_flip() +
   labs(x="Topic",y="Count") +
-  ggtitle(paste("Number of times the word", word2search, "appears")) +
+  ggtitle(paste("Weight of the word", word2search, "in topics")) +
   theme(plot.title = element_text(family = "Trebuchet MS", color="#666666", face="bold", size=22, hjust=0.5)) 
 
 ```
@@ -160,7 +160,7 @@ topicDF <- doc.topics %>%
   as_data_frame() %>%
   mutate(title = rownames(doc.topics)) %>%
   gather(topic, proportion, -title)
-View(topicDF)
+asView(topicDF)
 
 # we could also arrange our table by title
 topicDF %>% 
