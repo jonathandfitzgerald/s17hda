@@ -279,6 +279,7 @@ ggplot(data = joined1850,
   scale_fill_viridis() + theme_bw()
 ```
 
+
 # Exercises
 
 1. If at all possible, find a shapefile in some way pertinent to your data (or, in a pinch, that you just think might be interesting). Do whatever preprocessing you must and then import it into R. Plot it. 
@@ -287,4 +288,6 @@ ggplot(data = joined1850,
 
 3. Considering the 1850 census data, is there a correlation between data points that might be geographically meaningful? Can you map that correlation?
 
-4. Find a projection that you think works well with the census map (or your own map) and be ready to talk about why.
+4. One mapping option we did not explore is the `heatmap`. Can you figure out a good dataset/datapoint for visualizing as a heatmap and then create that map?
+
+5. Reach goal. Several R packages enable you to extract placenames from texts using a technique called "named entity extraction." Lincoln Mullen [describes this process](https://rpubs.com/lmullen/nlp-chapter), though Abby Mullen also [describes some of the challenges](http://abbymullen.org/named-entity-extraction-productive-failure/). Can you extract placenames from the Wright American fiction corpus we've used in class? Remember you can load that data with `source("readWright.R")`. 
