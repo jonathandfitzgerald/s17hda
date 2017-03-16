@@ -1,7 +1,7 @@
 ---
 title: "Mapping"
 author: "Ryan Cordell"
-date: "3/9/2017"
+date: "3/15/2017"
 output: html_document
 ---
 
@@ -115,7 +115,7 @@ This is a dataset that obviously lends itself to mapping, but it's missing two k
 
 Fortunately `ggmap` gives us simple tools for geocoding using either the Data Science Toolkit or Google Maps' API. The latter, however, limits requests to 2500 per day from a given IP address unless you happen to have a paid pro account. There are more than 2500 lines in the `cities` dataframe, which means we could not geocode it all using Google today and the Data Science Toolkit has been acting up lately. In addition, it takes awhile to process even a few addresses. 
 
-To keep thing manageable for today and see how this works, let's filter our dataframe down to just those cities with census records going back to 1830. I've done something a little strange with the `filter` function below; can anyone figure out what, and why? 
+To keep thing manageable for today and see how this works, let's filter our dataframe down to just those cities with census records going back to 1830.
 
 ```{r}
 cities_short <- cities %>%
@@ -268,6 +268,7 @@ ggplot(data = joined1850,
   theme(legend.position = "bottom") 
 ```
 
+The plot below uses the package `viridis` to use a scale that's friendly to colorblind users. Thanks to Thanasis for pointing me toward it. 
 
 ```{r}
 ggplot(data = joined1850,
@@ -282,4 +283,8 @@ ggplot(data = joined1850,
 
 1. If at all possible, find a shapefile in some way pertinent to your data (or, in a pinch, that you just think might be interesting). Do whatever preprocessing you must and then import it into R. Plot it. 
 
-2. 
+2. Load `booktitles-sub.tsv` into R. Preprocess the data as necessary and then geocode it. Map the top 15 cities by number of publications.   
+
+3. Considering the 1850 census data, is there a correlation between data points that might be geographically meaningful? Can you map that correlation?
+
+4. Find a projection that you think works well with the census map (or your own map) and be ready to talk about why.
