@@ -58,8 +58,8 @@ We can use the `spTransform` function in `rgdal` to set a new project system for
 
 ```{r}
 winkel <- spTransform(earth, CRS("+proj=wintri"))
-plot(winkel, col = "gray")
-title("The world according to Oswald Winkel")
+plot(winkel, col = "gray") + 
+  title("The world according to Oswald Winkel")
 ```
 
 Or the [Gall-Peters projection](https://www.youtube.com/watch?v=vVX-PrBRtTY):
@@ -141,7 +141,7 @@ ggplot(cities %>% filter(Y1830 > 0), aes(x = LON, y = LAT)) +
   coord_map()
 ```
 
-I'm guessing, though, that we'd prefer to see this on a map rather than a grid. To do that, we'll need to convert the shapefile object we imported earlier into a dataframe that `ggplot` can understand, which we can do using the `tidy` function (note: you may need to install and load both `broom` and `maptools`, though these were already installed for me, and you may need to run the function `gpclibPermit()` in the console before you can run the code below sans error.)
+I'm guessing, though, that we'd prefer to see this on a map rather than a grid. To do that, we'll need to convert the shapefile object we imported earlier into a dataframe that `ggplot` can understand, which we can do using the `tidy` function (note: you may need to install and load both `broom`, `maptools`, and `gpclib`, though these were already installed for me, and you may need to run the function `gpclibPermit()` in the console before you can run the code below sans error.)
 
 ```{r}
 map1830_df <- tidy(map1830_sp, region = "GISJOIN")
