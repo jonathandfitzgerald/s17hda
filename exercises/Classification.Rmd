@@ -194,27 +194,44 @@ mallet.instances <- mallet.import(id.array = vtGenres$cluster,
                                   text.array = vtGenres$text, 
                                   stoplist.file = "./data/stopwords.txt")
 
-n.topics <-12
+n.topics <- 15
 
-topic.model <- MalletLDA(num.topics=n.topics, alpha.sum = 1, beta = 0.1)
+topic.model <- MalletLDA(num.topics=n.topics)
 topic.model$loadDocuments(mallet.instances)
+
+#Look at the word frequencies sorted in order.
+vocabulary <- topic.model$getVocabulary()
+word.freqs <- mallet.word.freqs(topic.model)
+head(word.freqs)
+
+#Some preferences. Inside baseball: see Wallach and Mimno for what's going on.
 topic.model$setAlphaOptimization(20, 50)
-topic.model$train(500)
+topic.model$train(300)
+#Increase the fit without changing the topic distribution; optional
 topic.model$maximize(10)
-
-topic.words <- mallet.topic.words(topic.model)
-
-topic_labels <- rep("", n.topics)
-for (topic in 1:n.topics) {
-  topic_labels[topic] <- paste(
-    mallet.top.words(topic.model, topic.words[topic,], num.top.words=5)$words, collapse=" "
-  )}
 
 #Gets a list of the documents and topics
 doc.topics <- mallet.doc.topics(topic.model, smoothed=T, normalized=T)
-rownames(doc.topics) = vtGenres$cluster
-colnames(doc.topics) = topic_labels
+#Changes the orientation of that matrix to be horizontal:
+topic.docs <- t(doc.topics)
 
+#Gets a list of the top words.
+topic.words <- mallet.topic.words(topic.model, smoothed=T, normalized=T)
+
+
+#Assign some labels to the topics
+topics.labels <- rep("", n.topics)
+for (topic in 1:n.topics) {
+  topics.labels[topic] <- paste(
+    mallet.top.words(topic.model, topic.words[topic,], num.top.words=5)$words, collapse=" "
+  )}
+topics.labels
+#to look at the labels, type "topics.labels"
+
+rownames(doc.topics) = vtGenres$cluster
+colnames(doc.topics) = topics.labels
+
+#Create a dataframe
 topicsDF = doc.topics %>% 
   as.data.frame() %>% 
   mutate(cluster = vtGenres$cluster, primary_genre = vtGenres$genre) %>% 
@@ -238,7 +255,7 @@ Similar to the way the naive Bayes classifier needed prior information about the
 
 ```{r}
 #Create a training set
-training = sample(c(TRUE,FALSE),nrow(modeling_matrix),replace=T,prob = c(.50,.50))
+training = sample(c(TRUE,FALSE),nrow(modeling_matrix),replace=T,prob = c(.75,.25))
 
 #Convert training set into dataframe
 training_frame = data.frame(modeling_matrix[training,])
