@@ -12,7 +12,7 @@ Last week we talked about modeling, and today we'll take on one method for model
 
 Now we're going to use the `mallet` library to do some topic modelling. First, let's load the libraries we've been using: the same, now plus `mallet` and a new, strange one. Anyone know what `source("readWright.R")` is doing here?
 
-```{r}
+```{r eval=FALSE}
 
 source("readWright.R")
 

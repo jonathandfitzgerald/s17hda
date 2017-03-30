@@ -76,7 +76,7 @@ The other parameters here are `vectors`, which determines how many dimensions th
 This will take a short time to run, probably a couple of minutes.
 
 ```{r}
-THREADS <- 3
+THREADS <- 6
 if (!file.exists('data/wright_vectors.bin')) {
   wright_model <- train_word2vec(
     'data/wright.txt',
@@ -99,13 +99,13 @@ Let’s start by taking a look at a plot of a two-dimensional reduction of the v
 We won’t all get the same results here, since the process used is nondeterministic.  The clusters that appear should be similar, but they won’t be in the same place.
 
 ```{r}
-wright_model %>% plot(perplexity=10)
+wright_model %>% plot(perplexity=100)
 ```
 
 One of the simple things we can do with a vector space model is look at what shows up near a word we’re interested in.  Let’s start with a simple word, _woman._
 
 ```{r}
-wright_model %>% closest_to('woman', 20) %>%
+wright_model %>% closest_to('bark', 20) %>%
   View()
 ```
 
@@ -139,7 +139,7 @@ cosineDist(wright_model[['man']], wright_model[['boy']])
 We can also use `closest_to()` to look at more complex things.  For example, we can ask for what’s closest to both _dog_ and _cat_ – maybe general animal words?
 
 ```{r}
-wright_model %>% closest_to(~'dog'+'cat',20) %>%
+wright_model %>% closest_to(~'indian'+'man',20) %>%
   View()
 ```
 
@@ -154,9 +154,9 @@ Experiment with a few combinations yourself in the block below. Can you find any
 We can also look at what’s closest to one word and not another.  Let’s see if we can work with _man_ and _woman_ to uncover associations with maleness and femaleness.
 
 ```{r}
-wright_model %>% closest_to(~'man'-'woman',20) %>%
+wright_model %>% closest_to(~'he'-'she',40) %>%
   View()
-wright_model %>% closest_to(~'woman'-'man',20) %>%
+wright_model %>% closest_to(~'girl'-'boy',40) %>%
   View()
 ```
 
@@ -170,5 +170,6 @@ wright_model %>% closest_to(~'woman'-'man'+'boy',20) %>%
 What’s going on here? Can you write your own below?
 
 ```{r}
-
+wright_model %>% closest_to(~'america' - 'england' + 'england', 20) %>%
+  View()
 ```
