@@ -18,7 +18,7 @@ install.packages("RCurl")
 install.packages("RJSONIO")
 ```
 
-You'll also need to run the follwing huge chunk of code, which is basically a function that Ben wrote for pulling data from `bookworm`. You could save this in your `functions.R` file, but it's not likely you'll use it again, so maybe just run it here:
+You'll also need to run the following huge chunk of code, which is basically a function that Ben wrote for pulling data from `bookworm`. You could save this in your `functions.R` file, but it's not likely you'll use it again, so maybe just run it here:
 
 ```{r}
 
@@ -114,7 +114,7 @@ fedWords = bookworm(database="federalist",groups=list("author","title","unigram"
 
 ```
 
-If you view the dataframe you just created, you'll see a column for author, title, unigram, and word count. The author and the title should be obvious, the unigram is just a word (there's one row for every unique word in the particular paper), and the word count is the number of times that word appears in each paper. Now, we want to calculate the probability that an author would use a particular word. This is a well regarded way of doing authorship attribution, by knowing how likely it is that an author will use a particular word, we can guess the probablity that particular work was written by a particular author.
+If you view the dataframe you just created, you'll see a column for author, title, unigram, and word count. The author and the title should be obvious, the unigram is just a word (there's one row for every unique word in the particular paper), and the word count is the number of times that word appears in each paper. Now, we want to calculate the probability that an author would use a particular word. This is a well regarded way of doing authorship attribution, by knowing how likely it is that an author will use a particular word, we can guess the probability that particular work was written by a particular author.
 
 ```{r}
 
@@ -151,9 +151,9 @@ classification = chances %>%
 
 ```
 
-As I noted above, this is a naive Bayes classifier. Naive Bayes is a family of classifiers that use as their starting point Bayes' theorem, which basically says that we can determine the probability of something based on prior knowledged of conditions related to that thing. In this case, we can guess the probablility that a document was written by an author if we know some things about the authors and the documents. It is said to be _naive_ because it ignores any correlation between features. That is, in the above example, each document and author's probability is determined independent of the others. 
+As I noted above, this is a naive Bayes classifier. Naive Bayes is a family of classifiers that use as their starting point Bayes' theorem, which basically says that we can determine the probability of something based on prior knowledge of conditions related to that thing. In this case, we can guess the probability that a document was written by an author if we know some things about the authors and the documents. It is said to be _naive_ because it ignores any correlation between features. That is, in the above example, each document and author's probability is determined independent of the others. 
 
-So what did we just do? First, we converted the probability we had previously calculated into the logarithim of that probability and then we multiplied it by word count. Then we divided that by the word count. We created a new column called `realAuthor`, which is just the first row of the author column for each document. Finally, we arranged the dataframe by the newly created logProbability column, grouped the frame together by the document title, and sliced so as to keep only the highest probability. The end result is that for each document we can see the "real author" and the author that the classifier guessed with its accompanying probability. 
+So what did we just do? First, we converted the probability we had previously calculated into the logarithm of that probability and then we multiplied it by word count. Then we divided that by the word count. We created a new column called `realAuthor`, which is just the first row of the author column for each document. Finally, we arranged the dataframe by the newly created logProbability column, grouped the frame together by the document title, and sliced so as to keep only the highest probability. The end result is that for each document we can see the "real author" and the author that the classifier guessed with its accompanying probability. 
 
 How'd it do? Here's a quick calculation of the percentage of wrong guesses, determined by removing the "Disputed" authors, and looking at the number of times the `authorCandidate` is not the same as the `realAuthor`, divided by the total number of rows (and multiplied by 100 to give a percent).
 
@@ -170,7 +170,7 @@ It was wrong 20% of the time, which means it was right 80% of the time. Not bad.
 
 # Viral Texts Classification Work
 
-Naive Bayes is well suited to exercises like authorship attribuion, but the thing about classification methods is that they are not one size fits all. The method that I currently employ was originally conceived of by Ben Schmidt (surprise, surprise!) in response to conversations we had shortly after I was hired by the Viral Texts Project. That is to say, Ben was thinking of the particular challenges and opportunities related to working with nineteenth century newspaper texts when he came up with this idea. Incidentally, his first introduction of the technique on his blog used the method to classify television episodes, and you can read that poster [here](http://bookworm.benschmidt.org/posts/2015-09-14-Classifying_genre.html).
+Naive Bayes is well suited to exercises like authorship attribution, but the thing about classification methods is that they are not one size fits all. The method that I currently employ was originally conceived of by Ben Schmidt (surprise, surprise!) in response to conversations we had shortly after I was hired by the Viral Texts Project. That is to say, Ben was thinking of the particular challenges and opportunities related to working with nineteenth century newspaper texts when he came up with this idea. Incidentally, his first introduction of the technique on his blog used the method to classify television episodes, and you can read that poster [here](http://bookworm.benschmidt.org/posts/2015-09-14-Classifying_genre.html).
 
 We need to some topic modelling first here, so read in the following CSV, and then I copied the relevant lines from `TopicModeling.Rmd` file for easy access. Quick note, if you ever get the following error with `mallet`: `Error in .jcall("RJavaTools", "Ljava/lang/Object;", "invokeMethod", cl,  :  java.lang.NoSuchMethodException: No suitable method for the given parameters`, or something like it, the most likely culprit is that your columns aren't character columns, so quick fix for that.
 
@@ -288,7 +288,7 @@ top_genres = topicsDF %>% group_by(primary_genre) %>% summarize(cluster=n()) %>%
 
 Also, because this corpus was pre-prepared, I selected nearly equal numbers of each genre. So the above is a pretty boring visualization.
 
-Here is where we run the function we defined above. Note that the `glm`, which thells the function to use linear regression (or generalized linear model) and the `family` declaration. These can be changed, and I've done some experimenting to see how it alters the results. Try, for example, to change `family` to `binomial`.
+Here is where we run the function we defined above. Note that the `glm`, which tells the function to use linear regression (or generalized linear model) and the `family` declaration. These can be changed, and I've done some experimenting to see how it alters the results. Try, for example, to change `family` to `binomial`.
 
 ```{r}
 
@@ -342,7 +342,7 @@ confusion %>%
 
 ```
 
-What percentages did you reach? You probably noticed the prose genre is kind of rough; that has been a persistent problem since, at this point, it's kind of a catchall. I've done a bunch of work to improve this performance. One such effort, which I wanted to higlight here, is to show not just the probability that a particular cluster belongs to one genre, but the possibilities for each genre. First, install and load the `reshape` package, but note that if things start acting up in your version of RStudio, unload the `reshape` package; the easiest way is to uncheck the box under "Packages".
+What percentages did you reach? You probably noticed the prose genre is kind of rough; that has been a persistent problem since, at this point, it's kind of a catchall. I've done a bunch of work to improve this performance. One such effort, which I wanted to highlight here, is to show not just the probability that a particular cluster belongs to one genre, but the possibilities for each genre. First, install and load the `reshape` package, but note that if things start acting up in your version of R Studio, unload the `reshape` package; the easiest way is to uncheck the box under "Packages".
 
 ```{r}
 
@@ -382,7 +382,7 @@ ggplot(top_predictors %>% filter(topic!="(Intercept)", strength>0)) + geom_bar(s
 
 ```
 
-Now, this is a lot, but there's more. I have shown you here how to classify genres for texts that you already know the genre of, but the real trick is then applying this model to the unknown. I suspect we won't have time to walk through this all, but I don't want to leave you hanging, so I'm going to paste a blob of code below and say, please don't hesistate to meet with me to walk through this part of the process!
+Now, this is a lot, but there's more. I have shown you here how to classify genres for texts that you already know the genre of, but the real trick is then applying this model to the unknown. I suspect we won't have time to walk through this all, but I don't want to leave you hanging, so I'm going to paste a blob of code below and say, please don't hesitate to meet with me to walk through this part of the process!
 
 ```{r}
 
