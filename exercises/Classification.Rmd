@@ -13,7 +13,7 @@ So, let's jump in!
 
 We are going to get The Federalist Paper database from Ben Schmidt's bookworm database, which stores word counts and metadata for easy access. In order to do so, you'll need to install the following packages, which allow us to interface with Ben's data:
 
-``` {r}
+```{r}
 install.packages("RCurl")
 install.packages("RJSONIO")
 ```
@@ -250,12 +250,12 @@ dim(modeling_matrix)
 
 ```
 
-Similar to the way the naive Bayes classifier needed prior information about the data in order to make it's guesses, we need to provide the classifier with some model in order for it to perform. So, below we create a training set by sampling randomly from our data. The last bit below `prob = c(.75,.25)` is telling it to sample 75% of the data.
+Similar to the way the naive Bayes classifier needed prior information about the data in order to make its guesses, we need to provide the classifier with some model in order for it to perform. So, below we create a training set by sampling randomly from our data. The last bit below `prob = c(.75,.25)` is telling it to sample 75% of the data.
 
 
 ```{r}
 #Create a training set
-training = sample(c(TRUE,FALSE),nrow(modeling_matrix),replace=T,prob = c(.75,.25))
+training = sample(c(TRUE,FALSE),nrow(modeling_matrix),replace=T,prob = c(.80,.20))
 
 #Convert training set into dataframe
 training_frame = data.frame(modeling_matrix[training,])
